@@ -1,10 +1,23 @@
 __author__ = "Your names"
 __Copyright__ =  "Copyright @2022"
 
+from typing import overload
+
 class circuit(object):
     def __init__(self, in1, in2):
         self.in1_ = in1
         self.in2_ = in2
+
+
+class registerFile(circuit):
+    def __init__(self, reg_initial_value):
+        pass
+    def setRegValue(self, o_reg_decoder, value_to_set):
+        pass
+    def getRegValue(self, o_reg_decoder):
+        pass
+    def getAllRegValues(self):
+        pass
 
 class andgate(circuit):
     def getCircuitOutput(self):
@@ -19,6 +32,39 @@ class orgate(circuit):
             return 0
         else:
             return 1
+
+class orgate3(circuit):
+    def __init__(self, in1, in2, in3):
+        self.in1_ = in1
+        self.in2_ = in2
+        self.in3_ = in3
+
+    def getCircuitOutput(self):
+        org0 = orgate(self.in1_, self.in2_)
+        out_org0 = org0.getCircuitOutput()
+
+        org1 = orgate(out_org0, self.in3_)
+        out_org1 = org1.getCircuitOutput()
+        return out_org1
+
+class orgate4(circuit):
+    def __init__(self, in1, in2, in3, in4):
+        self.in1_ = in1
+        self.in2_ = in2
+        self.in3_ = in3
+        self.in4_ = in4
+
+    def getCircuitOutput(self):
+        org0 = orgate(self.in1_, self.in2_)
+        out_org0 = org0.getCircuitOutput()
+
+        org1 = orgate(out_org0, self.in3_)
+        out_org1 = org1.getCircuitOutput()
+
+        org2 = orgate(out_org1, self.in4_)
+        out_org2 = org2.getCircuitOutput()
+        return out_org2
+
 
 class notgate(circuit):
     def __init__(self, in1):
@@ -50,24 +96,89 @@ class andgate3(circuit):
 
 #2to1 mux implemented by notgate, andgates and orgates
 class mux_2to1(circuit):
-    '''
-    Implement a 2to1 multiplexer by using the notgate, andgate and orgate
-    '''
+    def __init__(self, d0, d1, s):
+        self.d0_ = d0
+        self.d1_ = d1
+        self.s_ = s
 
+    def getCircuitOutput(self):
+        not_s = notgate(self.s_)
+        andg0 = andgate(self.d0_, not_s.getCircuitOutput())
+        andg1 = andgate(self.d1_,self.s_)
+        org0 = orgate(andg0.getCircuitOutput(), andg1.getCircuitOutput())
+        out_org0 = org0.getCircuitOutput()
+        return out_org0
+
+#mux = mux_2to1(1, 1, 1)
+#print(mux.getCircuitOutput())
 
 #4to1 mux implemented by 2to1 muxes
 class mux_4to1(circuit):
-    '''
-    Implement a 4to1 multiplexer by using the mux_2to1
-    '''
+    def __init__(self, d0, d1, d2, d3, s0, s1):
+        self.d0_ = d0
+        self.d1_ = d1
+        self.d2_ = d2
+        self.d3_ = d3
+        self.s0_ = s0
+        self.s1_ = s1
 
+    def getCircuitOutput(self):
+        mux0 = mux_2to1(self.d0_, self.d1_, self.s0_)
+        out_mux0 = mux0.getCircuitOutput()
+        mux1 = mux_2to1(self.d2_,self.d3_, self.s0_)
+        out_mux1 = mux1.getCircuitOutput()
+        mux2 = mux_2to1(out_mux0, out_mux1, self.s1_)
+        out_mux2 = mux2.getCircuitOutput()
+        return out_mux2
 
 #fulladder implemented with logic gates
 class fulladder(circuit):
-    '''
-    Implement a full adder by using the above circuits, e.g.,  andgate, orgate3, etc.
-    '''
+    def __init__(self, a, b, c_in):
+        self.a_ = a
+        self.b_ = b
+        self.c_in_ = c_in
 
+    def getCircuitOutputSum(self):
+        
+        not_a = notgate(self.a_)
+        not_b = notgate(self.b_)
+        not_c_in = notgate(self.c_in_)
+
+        andg3_0 = andgate3(not_a.getCircuitOutput(), 
+                           not_b.getCircuitOutput(), 
+                           self.c_in_)
+                           
+        andg3_1 = andgate3(not_a.getCircuitOutput(), 
+                           self.b_, 
+                           not_c_in.getCircuitOutput())
+
+        andg3_2 = andgate3(self.a_, 
+                           not_b.getCircuitOutput(), 
+                           not_c_in.getCircuitOutput())
+                           
+        andg3_3 = andgate3(self.a_, 
+                           self.b_, 
+                           self.c_in_)
+
+        org4_0 = orgate4(andg3_0.getCircuitOutput(), 
+                         andg3_1.getCircuitOutput(), 
+                         andg3_2.getCircuitOutput(), 
+                         andg3_3.getCircuitOutput())
+                         
+        out_org4_0 = org4_0.getCircuitOutput()
+        return out_org4_0
+
+    def getCircuitOutputCarry(self):
+
+        andg_0 = andgate(self.a_, self.b_)
+        andg_1 = andgate(self.b_, self.c_in_)
+        andg_2 = andgate(self.a_, self.c_in_)
+
+        org3_0 = orgate3(andg_0.getCircuitOutput(), 
+                         andg_1.getCircuitOutput(), 
+                         andg_2.getCircuitOutput())
+
+        return org3_0.getCircuitOutput()
 
 #1 bit ALU implemented with logic gates
 class ALU_1bit(object):
