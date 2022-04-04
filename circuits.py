@@ -1,399 +1,372 @@
 __author__ = "Your names"
 __Copyright__ = "Copyright @2022"
 
-from typing import overload
 
-
-class circuit(object):
+class Circuit(object):
     def __init__(self, in1, in2):
-        self.in1_ = in1
-        self.in2_ = in2
+        self._in1 = in1
+        self._in2 = in2
 
 
-class registerFile(circuit):
+class RegFile:
     def __init__(self, reg_initial_value):
-        self.regs_ = [reg_initial_value] * 32
+        self._regs = [reg_initial_value] * 32
 
-    def setRegValue(self, o_reg_decoder, value_to_set):
-        self.regs_[o_reg_decoder.index(1)] = value_to_set
+    def set_reg_val(self, o_reg_decoder, value_to_set):
+        self._regs[o_reg_decoder.index(1)] = value_to_set
 
-    def getRegValue(self, o_reg_decoder):
-        return self.regs_[o_reg_decoder.index(1)]
+    def get_reg_val(self, o_reg_decoder):
+        return self._regs[o_reg_decoder.index(1)]
 
-    def getAllRegValues(self):
-        return self.regs_
+    def get_all_reg_vals(self):
+        return self._regs
 
 
-class andgate(circuit):
-    def getCircuitOutput(self):
-        if self.in1_ == 1 and self.in2_ == 1:
+class AndGate(Circuit):
+    def get_output(self):
+        if self._in1 == 1 and self._in2 == 1:
             return 1
         else:
             return 0
 
 
-class orgate(circuit):
-    def getCircuitOutput(self):
-        if self.in1_ == 0 and self.in2_ == 0:
+class OrGate(Circuit):
+    def get_output(self):
+        if self._in1 == 0 and self._in2 == 0:
             return 0
         else:
             return 1
 
 
-class orgate3(circuit):
+class OrGate3(Circuit):
     def __init__(self, in1, in2, in3):
-        self.in1_ = in1
-        self.in2_ = in2
-        self.in3_ = in3
+        super().__init__(in1, in2)
+        self._in3 = in3
 
-    def getCircuitOutput(self):
-        org0 = orgate(self.in1_, self.in2_)
-        out_org0 = org0.getCircuitOutput()
+    def get_output(self):
+        org0 = OrGate(self._in1, self._in2)
+        out_org0 = org0.get_output()
 
-        org1 = orgate(out_org0, self.in3_)
-        out_org1 = org1.getCircuitOutput()
+        org1 = OrGate(out_org0, self._in3)
+        out_org1 = org1.get_output()
         return out_org1
 
 
-class orgate4(circuit):
+class OrGate4(Circuit):
     def __init__(self, in1, in2, in3, in4):
-        self.in1_ = in1
-        self.in2_ = in2
-        self.in3_ = in3
-        self.in4_ = in4
+        super().__init__(in1, in2)
+        self._in3 = in3
+        self._in4 = in4
 
-    def getCircuitOutput(self):
-        org0 = orgate(self.in1_, self.in2_)
-        out_org0 = org0.getCircuitOutput()
+    def get_output(self):
+        org0 = OrGate(self._in1, self._in2)
+        out_org0 = org0.get_output()
 
-        org1 = orgate(out_org0, self.in3_)
-        out_org1 = org1.getCircuitOutput()
+        org1 = OrGate(out_org0, self._in3)
+        out_org1 = org1.get_output()
 
-        org2 = orgate(out_org1, self.in4_)
-        out_org2 = org2.getCircuitOutput()
+        org2 = OrGate(out_org1, self._in4)
+        out_org2 = org2.get_output()
         return out_org2
 
 
-class notgate(circuit):
+class NotGate:
     def __init__(self, in1):
-        self.in1_ = in1
+        self._in1 = in1
 
-    def getCircuitOutput(self):
-        if self.in1_ == 1:
+    def get_output(self):
+        if self._in1 == 1:
             return 0
-        elif self.in1_ == 0:
+        elif self._in1 == 0:
             return 1
 
-# Hint: you may implement some multi-input logic gates to help you build the circuit,
-# for example, below is a 3-input andgate3 boolean algebra: Y=ABC
 
-
-class andgate3(circuit):
+class AndGate3(Circuit):
     def __init__(self, in1, in2, in3):
-        self.in1_ = in1
-        self.in2_ = in2
-        self.in3_ = in3
+        super().__init__(in1, in2)
+        self._in3 = in3
 
-    def getCircuitOutput(self):
-        andg0 = andgate(self.in1_, self.in2_)
-        out_andg0 = andg0.getCircuitOutput()
+    def get_output(self):
+        andg_0 = AndGate(self._in1, self._in2)
+        out_andg_0 = andg_0.get_output()
 
-        andg1 = andgate(out_andg0, self.in3_)
-        out_andg1 = andg1.getCircuitOutput()
+        andg_1 = AndGate(out_andg_0, self._in3)
+        out_andg_1 = andg_1.get_output()
 
-        return out_andg1
+        return out_andg_1
 
 
-class andgate4(circuit):
+class AndGate4(Circuit):
     def __init__(self, in1, in2, in3, in4):
-        self.in1_ = in1
-        self.in2_ = in2
-        self.in3_ = in3
-        self.in4_ = in4
+        super().__init__(in1, in2)
+        self._in3 = in3
+        self._in4 = in4
 
-    def getCircuitOutput(self):
-        andg3_0 = andgate3(self.in1_, self.in2_, self.in3_)
-        out_andg3_0 = andg3_0.getCircuitOutput()
+    def get_output(self):
+        andg3_0 = AndGate3(self._in1, self._in2, self._in3)
+        out_andg3_0 = andg3_0.get_output()
 
-        andg_0 = andgate(out_andg3_0, self.in4_)
-        return andg_0.getCircuitOutput()
+        andg_0 = AndGate(out_andg3_0, self._in4)
+        return andg_0.get_output()
 
 
-class andgate5(circuit):
+class AndGate5(Circuit):
     def __init__(self, in1, in2, in3, in4, in5):
-        self.in1_ = in1
-        self.in2_ = in2
-        self.in3_ = in3
-        self.in4_ = in4
-        self.in5_ = in5
+        super().__init__(in1, in2)
+        self._in3 = in3
+        self._in4 = in4
+        self._in5 = in5
 
-    def getCircuitOutput(self):
-        andg4_0 = andgate4(self.in1_, self.in2_, self.in3_, self.in4_)
-        out_andg4_0 = andg4_0.getCircuitOutput()
+    def get_output(self):
+        andg4_0 = AndGate4(self._in1, self._in2, self._in3, self._in4)
+        out_andg4_0 = andg4_0.get_output()
 
-        andg_0 = andgate(out_andg4_0, self.in5_)
-        return andg_0.getCircuitOutput()
-
-# 2to1 mux implemented by notgate, andgates and orgates
+        andg_0 = AndGate(out_andg4_0, self._in5)
+        return andg_0.get_output()
 
 
-class mux_2to1(circuit):
+class Mux2To1:
     def __init__(self, d0, d1, s):
-        self.d0_ = d0
-        self.d1_ = d1
-        self.s_ = s
+        self._d0 = d0
+        self._d1 = d1
+        self._s = s
 
-    def getCircuitOutput(self):
-        not_s = notgate(self.s_)
-        andg0 = andgate(self.d0_, not_s.getCircuitOutput())
-        andg1 = andgate(self.d1_, self.s_)
-        org0 = orgate(andg0.getCircuitOutput(), andg1.getCircuitOutput())
-        out_org0 = org0.getCircuitOutput()
+    def get_output(self):
+        not_s = NotGate(self._s)
+        andg0 = AndGate(self._d0, not_s.get_output())
+        andg1 = AndGate(self._d1, self._s)
+        org0 = OrGate(andg0.get_output(), andg1.get_output())
+        out_org0 = org0.get_output()
         return out_org0
 
-# 4to1 mux implemented by 2to1 muxes
 
-
-class mux_4to1(circuit):
+class Mux4To1:
     def __init__(self, d0, d1, d2, d3, s0, s1):
-        self.d0_ = d0
-        self.d1_ = d1
-        self.d2_ = d2
-        self.d3_ = d3
-        self.s0_ = s0
-        self.s1_ = s1
+        self._d0 = d0
+        self._d1 = d1
+        self._d2 = d2
+        self._d3 = d3
+        self._s0 = s0
+        self._s1 = s1
 
-    def getCircuitOutput(self):
-        mux0 = mux_2to1(self.d0_, self.d1_, self.s0_)
-        out_mux0 = mux0.getCircuitOutput()
-        mux1 = mux_2to1(self.d2_, self.d3_, self.s0_)
-        out_mux1 = mux1.getCircuitOutput()
-        mux2 = mux_2to1(out_mux0, out_mux1, self.s1_)
-        out_mux2 = mux2.getCircuitOutput()
+    def get_output(self):
+        mux0 = Mux2To1(self._d0, self._d1, self._s0)
+        out_mux0 = mux0.get_output()
+        mux1 = Mux2To1(self._d2, self._d3, self._s0)
+        out_mux1 = mux1.get_output()
+        mux2 = Mux2To1(out_mux0, out_mux1, self._s1)
+        out_mux2 = mux2.get_output()
         return out_mux2
 
-# fulladder implemented with logic gates
 
-
-class fulladder(circuit):
+class FullAdder:
     def __init__(self, a, b, c_in):
-        self.a_ = a
-        self.b_ = b
-        self.c_in_ = c_in
+        self._a = a
+        self._b = b
+        self._c_in = c_in
 
-    def getCircuitOutputSum(self):
+    def get_output_sum(self):
+        not_a = NotGate(self._a)
+        not_b = NotGate(self._b)
+        not_c_in = NotGate(self._c_in)
 
-        not_a = notgate(self.a_)
-        not_b = notgate(self.b_)
-        not_c_in = notgate(self.c_in_)
+        andg3_0 = AndGate3(not_a.get_output(),
+                           not_b.get_output(),
+                           self._c_in)
 
-        andg3_0 = andgate3(not_a.getCircuitOutput(),
-                           not_b.getCircuitOutput(),
-                           self.c_in_)
+        andg3_1 = AndGate3(not_a.get_output(),
+                           self._b,
+                           not_c_in.get_output())
 
-        andg3_1 = andgate3(not_a.getCircuitOutput(),
-                           self.b_,
-                           not_c_in.getCircuitOutput())
+        andg3_2 = AndGate3(self._a,
+                           not_b.get_output(),
+                           not_c_in.get_output())
 
-        andg3_2 = andgate3(self.a_,
-                           not_b.getCircuitOutput(),
-                           not_c_in.getCircuitOutput())
+        andg3_3 = AndGate3(self._a,
+                           self._b,
+                           self._c_in)
 
-        andg3_3 = andgate3(self.a_,
-                           self.b_,
-                           self.c_in_)
+        org4_0 = OrGate4(andg3_0.get_output(),
+                         andg3_1.get_output(),
+                         andg3_2.get_output(),
+                         andg3_3.get_output())
 
-        org4_0 = orgate4(andg3_0.getCircuitOutput(),
-                         andg3_1.getCircuitOutput(),
-                         andg3_2.getCircuitOutput(),
-                         andg3_3.getCircuitOutput())
-
-        out_org4_0 = org4_0.getCircuitOutput()
+        out_org4_0 = org4_0.get_output()
         return out_org4_0
 
-    def getCircuitOutputCarry(self):
+    def get_output_carry(self):
+        andg_0 = AndGate(self._a, self._b)
+        andg_1 = AndGate(self._b, self._c_in)
+        andg_2 = AndGate(self._a, self._c_in)
 
-        andg_0 = andgate(self.a_, self.b_)
-        andg_1 = andgate(self.b_, self.c_in_)
-        andg_2 = andgate(self.a_, self.c_in_)
+        org3_0 = OrGate3(andg_0.get_output(),
+                         andg_1.get_output(),
+                         andg_2.get_output())
 
-        org3_0 = orgate3(andg_0.getCircuitOutput(),
-                         andg_1.getCircuitOutput(),
-                         andg_2.getCircuitOutput())
-
-        return org3_0.getCircuitOutput()
+        return org3_0.get_output()
 
 
-class decoderReg(circuit):
-    def __init__(self, instr_reg_filed):
-        self.a_ = instr_reg_filed[0]
-        self.b_ = instr_reg_filed[1]
-        self.c_ = instr_reg_filed[2]
-        self.d_ = instr_reg_filed[3]
-        self.e_ = instr_reg_filed[4]
+class RegDecoder:
+    def __init__(self, instr_reg):
+        self._a = instr_reg[0]
+        self._b = instr_reg[1]
+        self._c = instr_reg[2]
+        self._d = instr_reg[3]
+        self._e = instr_reg[4]
 
-    def getCircuitOutput(self):
-        not_a = notgate(self.a_)
-        out_not_a = not_a.getCircuitOutput()
-        not_b = notgate(self.b_)
-        out_not_b = not_b.getCircuitOutput()
-        not_c = notgate(self.c_)
-        out_not_c = not_c.getCircuitOutput()
-        not_d = notgate(self.d_)
-        out_not_d = not_d.getCircuitOutput()
-        not_e = notgate(self.e_)
-        out_not_e = not_e.getCircuitOutput()
+    def get_output(self):
+        not_a = NotGate(self._a)
+        out_not_a = not_a.get_output()
+        not_b = NotGate(self._b)
+        out_not_b = not_b.get_output()
+        not_c = NotGate(self._c)
+        out_not_c = not_c.get_output()
+        not_d = NotGate(self._d)
+        out_not_d = not_d.get_output()
+        not_e = NotGate(self._e)
+        out_not_e = not_e.get_output()
 
         output = [0] * 32
 
-        andg5_0 = andgate5(out_not_a, out_not_b,
-                           out_not_c, out_not_d, out_not_e)
-        output[0] = andg5_0.getCircuitOutput()
-        andg5_1 = andgate5(out_not_a, out_not_b, out_not_c, out_not_d, self.e_)
-        output[1] = andg5_1.getCircuitOutput()
-        andg5_2 = andgate5(out_not_a, out_not_b, out_not_c, self.d_, out_not_e)
-        output[2] = andg5_2.getCircuitOutput()
-        andg5_3 = andgate5(out_not_a, out_not_b, out_not_c, self.d_, self.e_)
-        output[3] = andg5_3.getCircuitOutput()
-        andg5_4 = andgate5(out_not_a, out_not_b, self.c_, out_not_d, out_not_e)
-        output[4] = andg5_4.getCircuitOutput()
-        andg5_5 = andgate5(out_not_a, out_not_b, self.c_, out_not_d, self.e_)
-        output[5] = andg5_5.getCircuitOutput()
-        andg5_6 = andgate5(out_not_a, out_not_b, self.c_, self.d_, out_not_e)
-        output[6] = andg5_6.getCircuitOutput()
-        andg5_7 = andgate5(out_not_a, out_not_b, self.c_, self.d_, self.e_)
-        output[7] = andg5_7.getCircuitOutput()
-        andg5_8 = andgate5(out_not_a, self.b_, out_not_c, out_not_d, out_not_e)
-        output[8] = andg5_8.getCircuitOutput()
-        andg5_9 = andgate5(out_not_a, self.b_, out_not_c, out_not_d, self.e_)
-        output[9] = andg5_9.getCircuitOutput()
-        andg5_10 = andgate5(out_not_a, self.b_, out_not_c, self.d_, out_not_e)
-        output[10] = andg5_10.getCircuitOutput()
-        andg5_11 = andgate5(out_not_a, self.b_, out_not_c, self.d_, self.e_)
-        output[11] = andg5_11.getCircuitOutput()
-        andg5_12 = andgate5(out_not_a, self.b_, self.c_, out_not_d, out_not_e)
-        output[12] = andg5_12.getCircuitOutput()
-        andg5_13 = andgate5(out_not_a, self.b_, self.c_, out_not_d, self.e_)
-        output[13] = andg5_13.getCircuitOutput()
-        andg5_14 = andgate5(out_not_a, self.b_, self.c_, self.d_, out_not_e)
-        output[14] = andg5_14.getCircuitOutput()
-        andg5_15 = andgate5(out_not_a, self.b_, self.c_, self.d_, self.e_)
-        output[15] = andg5_15.getCircuitOutput()
-        andg5_16 = andgate5(self.a_, out_not_b, out_not_c,
-                            out_not_d, out_not_e)
-        output[16] = andg5_16.getCircuitOutput()
-        andg5_17 = andgate5(self.a_, out_not_b, out_not_c, out_not_d, self.e_)
-        output[17] = andg5_17.getCircuitOutput()
-        andg5_18 = andgate5(self.a_, out_not_b, out_not_c, self.d_, out_not_e)
-        output[18] = andg5_18.getCircuitOutput()
-        andg5_19 = andgate5(self.a_, out_not_b, out_not_c, self.d_, self.e_)
-        output[19] = andg5_19.getCircuitOutput()
-        andg5_20 = andgate5(self.a_, out_not_b, self.c_, out_not_d, out_not_e)
-        output[20] = andg5_20.getCircuitOutput()
-        andg5_21 = andgate5(self.a_, out_not_b, self.c_, out_not_d, self.e_)
-        output[21] = andg5_21.getCircuitOutput()
-        andg5_22 = andgate5(self.a_, out_not_b, self.c_, self.d_, out_not_e)
-        output[22] = andg5_22.getCircuitOutput()
-        andg5_23 = andgate5(self.a_, out_not_b, self.c_, self.d_, self.e_)
-        output[23] = andg5_23.getCircuitOutput()
-        andg5_24 = andgate5(self.a_, self.b_, out_not_c, out_not_d, out_not_e)
-        output[24] = andg5_24.getCircuitOutput()
-        andg5_25 = andgate5(self.a_, self.b_, out_not_c, out_not_d, self.e_)
-        output[25] = andg5_25.getCircuitOutput()
-        andg5_26 = andgate5(self.a_, self.b_, out_not_c, self.d_, out_not_e)
-        output[26] = andg5_26.getCircuitOutput()
-        andg5_27 = andgate5(self.a_, self.b_, out_not_c, self.d_, self.e_)
-        output[27] = andg5_27.getCircuitOutput()
-        andg5_28 = andgate5(self.a_, self.b_, self.c_, out_not_d, out_not_e)
-        output[28] = andg5_28.getCircuitOutput()
-        andg5_29 = andgate5(self.a_, self.b_, self.c_, out_not_d, self.e_)
-        output[29] = andg5_29.getCircuitOutput()
-        andg5_30 = andgate5(self.a_, self.b_, self.c_, self.d_, out_not_e)
-        output[30] = andg5_30.getCircuitOutput()
-        andg5_31 = andgate5(self.a_, self.b_, self.c_, self.d_, self.e_)
-        output[31] = andg5_31.getCircuitOutput()
+        andg5_0 = AndGate5(out_not_a, out_not_b, out_not_c, out_not_d, out_not_e)
+        output[0] = andg5_0.get_output()
+        andg5_1 = AndGate5(out_not_a, out_not_b, out_not_c, out_not_d, self._e)
+        output[1] = andg5_1.get_output()
+        andg5_2 = AndGate5(out_not_a, out_not_b, out_not_c, self._d, out_not_e)
+        output[2] = andg5_2.get_output()
+        andg5_3 = AndGate5(out_not_a, out_not_b, out_not_c, self._d, self._e)
+        output[3] = andg5_3.get_output()
+        andg5_4 = AndGate5(out_not_a, out_not_b, self._c, out_not_d, out_not_e)
+        output[4] = andg5_4.get_output()
+        andg5_5 = AndGate5(out_not_a, out_not_b, self._c, out_not_d, self._e)
+        output[5] = andg5_5.get_output()
+        andg5_6 = AndGate5(out_not_a, out_not_b, self._c, self._d, out_not_e)
+        output[6] = andg5_6.get_output()
+        andg5_7 = AndGate5(out_not_a, out_not_b, self._c, self._d, self._e)
+        output[7] = andg5_7.get_output()
+        andg5_8 = AndGate5(out_not_a, self._b, out_not_c, out_not_d, out_not_e)
+        output[8] = andg5_8.get_output()
+        andg5_9 = AndGate5(out_not_a, self._b, out_not_c, out_not_d, self._e)
+        output[9] = andg5_9.get_output()
+        andg5_10 = AndGate5(out_not_a, self._b, out_not_c, self._d, out_not_e)
+        output[10] = andg5_10.get_output()
+        andg5_11 = AndGate5(out_not_a, self._b, out_not_c, self._d, self._e)
+        output[11] = andg5_11.get_output()
+        andg5_12 = AndGate5(out_not_a, self._b, self._c, out_not_d, out_not_e)
+        output[12] = andg5_12.get_output()
+        andg5_13 = AndGate5(out_not_a, self._b, self._c, out_not_d, self._e)
+        output[13] = andg5_13.get_output()
+        andg5_14 = AndGate5(out_not_a, self._b, self._c, self._d, out_not_e)
+        output[14] = andg5_14.get_output()
+        andg5_15 = AndGate5(out_not_a, self._b, self._c, self._d, self._e)
+        output[15] = andg5_15.get_output()
+        andg5_16 = AndGate5(self._a, out_not_b, out_not_c, out_not_d, out_not_e)
+        output[16] = andg5_16.get_output()
+        andg5_17 = AndGate5(self._a, out_not_b, out_not_c, out_not_d, self._e)
+        output[17] = andg5_17.get_output()
+        andg5_18 = AndGate5(self._a, out_not_b, out_not_c, self._d, out_not_e)
+        output[18] = andg5_18.get_output()
+        andg5_19 = AndGate5(self._a, out_not_b, out_not_c, self._d, self._e)
+        output[19] = andg5_19.get_output()
+        andg5_20 = AndGate5(self._a, out_not_b, self._c, out_not_d, out_not_e)
+        output[20] = andg5_20.get_output()
+        andg5_21 = AndGate5(self._a, out_not_b, self._c, out_not_d, self._e)
+        output[21] = andg5_21.get_output()
+        andg5_22 = AndGate5(self._a, out_not_b, self._c, self._d, out_not_e)
+        output[22] = andg5_22.get_output()
+        andg5_23 = AndGate5(self._a, out_not_b, self._c, self._d, self._e)
+        output[23] = andg5_23.get_output()
+        andg5_24 = AndGate5(self._a, self._b, out_not_c, out_not_d, out_not_e)
+        output[24] = andg5_24.get_output()
+        andg5_25 = AndGate5(self._a, self._b, out_not_c, out_not_d, self._e)
+        output[25] = andg5_25.get_output()
+        andg5_26 = AndGate5(self._a, self._b, out_not_c, self._d, out_not_e)
+        output[26] = andg5_26.get_output()
+        andg5_27 = AndGate5(self._a, self._b, out_not_c, self._d, self._e)
+        output[27] = andg5_27.get_output()
+        andg5_28 = AndGate5(self._a, self._b, self._c, out_not_d, out_not_e)
+        output[28] = andg5_28.get_output()
+        andg5_29 = AndGate5(self._a, self._b, self._c, out_not_d, self._e)
+        output[29] = andg5_29.get_output()
+        andg5_30 = AndGate5(self._a, self._b, self._c, self._d, out_not_e)
+        output[30] = andg5_30.get_output()
+        andg5_31 = AndGate5(self._a, self._b, self._c, self._d, self._e)
+        output[31] = andg5_31.get_output()
 
         return output
 
-# 1 bit ALU implemented with logic gates
 
-
-class signExt(circuit):
+class SignExt:
     def __init__(self, bits16):
-        self.bits16_ = bits16
+        self._bits16 = bits16
 
-    def getCircuitOutput(self):
-        output = [self.bits16_[0]] * 16
-        output.extend(self.bits16_)
+    def get_output(self):
+        output = [self._bits16[0]] * 16
+        output.extend(self._bits16)
         return output
 
 
-class ALU_1bit(object):
-    '''
-    Implement a 1-bit ALU by using the above circuits, e.g.,  mux_2to1, fulladder and mux_4to1, etc.
-    '''
+class ALU1Bit:
+    """
+    Implement a 1-bit ALU by using the above circuits, e.g.,  mux_2to1, FullAdder and mux_4to1, etc.
+    """
 
 
-class aluControl(circuit):
-    def __init__(self, f0, f1, f2, f3, f4, f5, Aluop0, Aluop1):
-        self.f0_ = f0
-        self.f1_ = f1
-        self.f2_ = f2
-        self.f3_ = f3
-        self.f4_ = f4
-        self.f5_ = f5
-        self.Aluop0_ = Aluop0
-        self.Aluop1_ = Aluop1
+class ALUControl:
+    def __init__(self, f0, f1, f2, f3, f4, f5, alu_op0, alu_op1):
+        self._f0 = f0
+        self._f1 = f1
+        self._f2 = f2
+        self._f3 = f3
+        self._f4 = f4
+        self._f5 = f5
+        self._alu_op0 = alu_op0
+        self._alu_op1 = alu_op1
 
-    def getAluControlOutput(self):
-        orgate0 = orgate(self.f0_, self.f3_)
-        andgate0 = andgate(orgate0.getCircuitOutput(), self.Aluop0_)
-        array0 = []
-        array0.append(andgate0.getCircuitOutput())
+    def get_output(self):
+        org_0 = OrGate(self._f0, self._f3)
+        andg_0 = AndGate(org_0.get_output(), self._alu_op0)
+        output = [andg_0.get_output()]
 
-        notgate0 = notgate(self.f2_)
-        notgate1 = notgate(self.Aluop1_)
-        orgate1 = orgate(notgate0.getCircuitOutput(),
-                         notgate1.getCircuitOutput())
-        array0.append(orgate1.getCircuitOutput())
+        notg_0 = NotGate(self._f2)
+        notg_1 = NotGate(self._alu_op1)
+        org_1 = OrGate(notg_0.get_output(),
+                       notg_1.get_output())
+        output.append(org_1.get_output())
 
-        andgate1 = andgate(self.f1_, self.Aluop1_)
-        orgate2 = orgate(self.Aluop0_, andgate1.getCircuitOutput())
-        array0.append(orgate2.getCircuitOutput())
+        andg_1 = AndGate(self._f1, self._alu_op1)
+        org_2 = OrGate(self._alu_op0, andg_1.get_output())
+        output.append(org_2.get_output())
 
-        notgate2 = notgate(self.Aluop0_)
-        andgate2 = andgate(self.Aluop0_, notgate2.getCircuitOutput())
-        array0.append(andgate2.getCircuitOutput())
-        return array0
-
-    '''
-    Implement the ALU control circuit shown in Figure D.2.2 on page 7 of the slides 10_ALU_Control.pdf.
-    There are eight inputs: aluOp1, aluOp2, f5, f4, f3, f2, f1, f0.
-    There are four outputs of the circuit, you may put them in a python list and return as a whole.
-    '''
+        notg_2 = NotGate(self._alu_op0)
+        andg_2 = AndGate(self._alu_op0, notg_2.get_output())
+        output.append(andg_2.get_output())
+        return output
 
 
-class ALU_32bit(object):
-    '''
+class ALU32Bit:
+    """
     Implement a 32 bit ALU by using the 1 bit ALU.
     Your 32-bit ALU should be able to compute 32-bit AND, OR, addition, subtraction, slt(set on if less than).
     The inputs are:
 
-    two python lists with lenth 32, e.g.:
+    two python lists with length 32, e.g.:
     A = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1]
     B = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1],
-    please note that bit 0 is at the end of the list, which means that bit 0 of A is A[31], bit 31 of A is A[0], bit 0 of B is B[31] and bit 31 of B is B[0].
+    please note that bit 0 is at the end of the list, which means that bit 0 of A is A[31], bit 31 of A is A[0], bit 0
+    of B is B[31] and bit 31 of B is B[0].
 
     carryIn for the 0th 1-bit ALU, which take care of the bit 0.
 
     aluctrs, which could be a list of alu control signals:
     aluctrs[0] controls the all the 2to1 mux in each 1-bit ALU for bits of input A,
     aluctrs[1] controls the all the 2to1 mux in each 1-bit ALU for bits of input B.
-    aluctrs[2] and aluctrs[3] controls all the 4to1 mux in each 1-bit ALU for choose what as output, 00 choose out from AND, 01 choose out from OR, 10 choose out from adder, 11 choose the less.
+    aluctrs[2] and aluctrs[3] controls all the 4to1 mux in each 1-bit ALU for choose what as output, 00 choose out from
+    AND, 01 choose out from OR, 10 choose out from adder, 11 choose the less.
 
-    Please note that the carryOut output of each 1-bit ALU except the 31th one should be the carryIn the next 1 bit ALU, you may use for loop here for the computation of the sequential 1-bit ALU.
+    Please note that the carryOut output of each 1-bit ALU except the 31st one should be the carryIn the next 1 bit ALU,
+    you may use for loop here for the computation of the sequential 1-bit ALU.
 
-    And please also note that in order to make slt work, we need to use the sum output from the adder of the 31th 1-bit ALU and make it as the less input of the 0th 1bit ALU.
-
-
-    '''
+    And please also note that in order to make slt work, we need to use the sum output from the adder of the 31st 1-bit
+    ALU and make it as the less input of the 0th 1bit ALU.
+    """

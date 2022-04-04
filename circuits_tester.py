@@ -1,27 +1,27 @@
 __author__ = "Your names"
 __Copyright__ = "Copyright @2022"
 
-
 import circuits
 
-
 '''
-To test your processor, you may let it execute a sequence of instructions, the below one contains five instructions, which perform add, or, add, and, slt in a sequence:
+
+To test your processor, you may let it execute a sequence of instructions, the below one contains five instructions, 
+which perform add, or, add, and, slt in a sequence:
 
 test_instruction_sequence = [
-[0, 0, 0, 0, 0, 0,    0, 0, 1, 1, 0,      0, 0, 1, 1, 1,     0, 1, 0, 0, 0,     0, 0, 0, 0, 0,     1, 0, 0, 0, 0, 0],     #add $8, $6, $7
-[0, 0, 0, 0, 0, 0,    0, 1, 0, 0, 0,      0, 0, 1, 1, 1,     0, 1, 0, 0, 1,     0, 0, 0, 0, 0,     1, 0, 0, 1, 0, 1],     #or $9, $8, $7
-[0, 0, 0, 0, 0, 0,    0, 1, 0, 0, 1,      0, 1, 0, 0, 1,     0, 1, 0, 1, 0,     0, 0, 0, 0, 0,     1, 0, 0, 0, 0, 0],     #add $10, $9, $9
-[0, 0, 0, 0, 0, 0,    0, 1, 0, 0, 1,      0, 1, 0, 1, 0,     0, 1, 0, 1, 1,     0, 0, 0, 0, 0,     1, 0, 0, 1, 0, 0],     #and $11, $9, $10
-[0, 0, 0, 0, 0, 0,    0, 0, 0, 1, 0,      0, 1, 0, 1, 0,     0, 0, 0, 1, 0,     0, 0, 0, 0, 0,     1, 0, 1, 0, 1, 0],     #slt $2, $3, $10
+[0, 0, 0, 0, 0, 0,  0, 0, 1, 1, 0,  0, 0, 1, 1, 1,  0, 1, 0, 0, 0,  0, 0, 0, 0, 0,  1, 0, 0, 0, 0, 0], #add $8, $6, $7
+[0, 0, 0, 0, 0, 0,  0, 1, 0, 0, 0,  0, 0, 1, 1, 1,  0, 1, 0, 0, 1,  0, 0, 0, 0, 0,  1, 0, 0, 1, 0, 1], #or $9, $8, $7
+[0, 0, 0, 0, 0, 0,  0, 1, 0, 0, 1,  0, 1, 0, 0, 1,  0, 1, 0, 1, 0,  0, 0, 0, 0, 0,  1, 0, 0, 0, 0, 0], #add $10, $9, $9
+[0, 0, 0, 0, 0, 0,  0, 1, 0, 0, 1,  0, 1, 0, 1, 0,  0, 1, 0, 1, 1,  0, 0, 0, 0, 0,  1, 0, 0, 1, 0, 0], #and $11, $9, $10
+[0, 0, 0, 0, 0, 0,  0, 0, 0, 1, 0,  0, 1, 0, 1, 0,  0, 0, 0, 1, 0,  0, 0, 0, 0, 0,  1, 0, 1, 0, 1, 0], #slt $2, $3, $10
 ]
 
 You may initialize an instance of your processor and use a for loop to execute those instructions one by one.
-Please print out all the register values after the execution of each instruction as steps, for example, the steps of the above instruction sequence would be looks like:
+Please print out all the register values after the execution of each instruction as steps, for example, the steps of the 
+above instruction sequence would be looks like:
 
-
-
-After excute instruciton:  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+After execute instruction:  
+[0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 Registers currently stores:
 Register  0 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  1 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
@@ -56,7 +56,8 @@ Register  29 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 Register  30 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  31 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-After excute instruciton:  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1]
+After execute instruction:  
+[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1]
 Registers currently stores:
 Register  0 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  1 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
@@ -91,7 +92,8 @@ Register  29 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 Register  30 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  31 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-After excute instruciton:  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+After execute instruction:  
+[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
 Registers currently stores:
 Register  0 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  1 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
@@ -126,7 +128,8 @@ Register  29 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 Register  30 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  31 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-After excute instruciton:  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0]
+After execute instruction:  
+[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0]
 Registers currently stores:
 Register  0 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  1 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
@@ -161,7 +164,8 @@ Register  29 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 Register  30 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  31 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-After excute instruciton:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0]
+After execute instruction:  
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0]
 Registers currently stores:
 Register  0 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  1 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
@@ -196,10 +200,7 @@ Register  29 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 Register  30 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 Register  31 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-
-
 '''
-
 
 test_instruction_sequence = [
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0,
@@ -214,19 +215,18 @@ test_instruction_sequence = [
      1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0],  # slt $2, $3, $10
 ]
 
-reg_initial_value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+reg_initial_value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-reg_file = circuits.registerFile(reg_initial_value)
+reg_file = circuits.RegFile(reg_initial_value)
 
-simpleMIPSCPU = circuits.simpleMIPS(reg_file)
+simple_mips_cpu = circuits.SimpleMIPS(reg_file)
 
-for instru in test_instruction_sequence:
+for instr in test_instruction_sequence:
 
-    simpleMIPSCPU.getCircuitOutput(instru)
+    simpleMIPSCPU.get_output(instr)
 
-    print("After excute instruciton: ", instru)
-    registers_values = reg_file.getAllRegValues()
+    print("After execute instruction: ", instr)
+    registers_values = reg_file.get_all_reg_vals()
     for i in range(0, len(registers_values)):
         print("Register ", i, ": ", registers_values[i])
     print(" ")
