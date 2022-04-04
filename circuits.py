@@ -12,16 +12,16 @@ class circuit(object):
 
 class registerFile(circuit):
     def __init__(self, reg_initial_value):
-        pass
+        self.regs_ = [reg_initial_value] * 32
 
     def setRegValue(self, o_reg_decoder, value_to_set):
-        pass
+        self.regs_[o_reg_decoder.index(1)] = value_to_set
 
     def getRegValue(self, o_reg_decoder):
-        pass
+        return self.regs_[o_reg_decoder.index(1)]
 
     def getAllRegValues(self):
-        pass
+        return self.regs_
 
 
 class andgate(circuit):
@@ -150,9 +150,6 @@ class mux_2to1(circuit):
         org0 = orgate(andg0.getCircuitOutput(), andg1.getCircuitOutput())
         out_org0 = org0.getCircuitOutput()
         return out_org0
-
-#mux = mux_2to1(1, 1, 1)
-# print(mux.getCircuitOutput())
 
 # 4to1 mux implemented by 2to1 muxes
 
@@ -321,6 +318,16 @@ class decoderReg(circuit):
 # 1 bit ALU implemented with logic gates
 
 
+class signExt(circuit):
+    def __init__(self, bits16):
+        self.bits16_ = bits16
+
+    def getCircuitOutput(self):
+        output = [self.bits16_[0]] * 16
+        output.extend(self.bits16_)
+        return output
+
+
 class ALU_1bit(object):
     '''
     Implement a 1-bit ALU by using the above circuits, e.g.,  mux_2to1, fulladder and mux_4to1, etc.
@@ -328,6 +335,37 @@ class ALU_1bit(object):
 
 
 class aluControl(circuit):
+    def __init__(self, f0, f1, f2, f3, f4, f5, Aluop0, Aluop1):
+        self.f0_ = f0
+        self.f1_ = f1
+        self.f2_ = f2
+        self.f3_ = f3
+        self.f4_ = f4
+        self.f5_ = f5
+        self.Aluop0_ = Aluop0
+        self.Aluop1_ = Aluop1
+
+    def getAluControlOutput(self):
+        orgate0 = orgate(self.f0_, self.f3_)
+        andgate0 = andgate(orgate0.getCircuitOutput(), self.Aluop0_)
+        array0 = []
+        array0.append(andgate0.getCircuitOutput())
+
+        notgate0 = notgate(self.f2_)
+        notgate1 = notgate(self.Aluop1_)
+        orgate1 = orgate(notgate0.getCircuitOutput(),
+                         notgate1.getCircuitOutput())
+        array0.append(orgate1.getCircuitOutput())
+
+        andgate1 = andgate(self.f1_, self.Aluop1_)
+        orgate2 = orgate(self.Aluop0_, andgate1.getCircuitOutput())
+        array0.append(orgate2.getCircuitOutput())
+
+        notgate2 = notgate(self.Aluop0_)
+        andgate2 = andgate(self.Aluop0_, notgate2.getCircuitOutput())
+        array0.append(andgate2.getCircuitOutput())
+        return array0
+
     '''
     Implement the ALU control circuit shown in Figure D.2.2 on page 7 of the slides 10_ALU_Control.pdf.
     There are eight inputs: aluOp1, aluOp2, f5, f4, f3, f2, f1, f0.
