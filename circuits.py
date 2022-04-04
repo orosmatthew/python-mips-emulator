@@ -1,7 +1,8 @@
 __author__ = "Your names"
-__Copyright__ =  "Copyright @2022"
+__Copyright__ = "Copyright @2022"
 
 from typing import overload
+
 
 class circuit(object):
     def __init__(self, in1, in2):
@@ -12,12 +13,16 @@ class circuit(object):
 class registerFile(circuit):
     def __init__(self, reg_initial_value):
         pass
+
     def setRegValue(self, o_reg_decoder, value_to_set):
         pass
+
     def getRegValue(self, o_reg_decoder):
         pass
+
     def getAllRegValues(self):
         pass
+
 
 class andgate(circuit):
     def getCircuitOutput(self):
@@ -26,12 +31,14 @@ class andgate(circuit):
         else:
             return 0
 
+
 class orgate(circuit):
     def getCircuitOutput(self):
         if self.in1_ == 0 and self.in2_ == 0:
             return 0
         else:
             return 1
+
 
 class orgate3(circuit):
     def __init__(self, in1, in2, in3):
@@ -46,6 +53,7 @@ class orgate3(circuit):
         org1 = orgate(out_org0, self.in3_)
         out_org1 = org1.getCircuitOutput()
         return out_org1
+
 
 class orgate4(circuit):
     def __init__(self, in1, in2, in3, in4):
@@ -76,8 +84,10 @@ class notgate(circuit):
         elif self.in1_ == 0:
             return 1
 
-#Hint: you may implement some multi-input logic gates to help you build the circuit,
-#for example, below is a 3-input andgate3 boolean algebra: Y=ABC
+# Hint: you may implement some multi-input logic gates to help you build the circuit,
+# for example, below is a 3-input andgate3 boolean algebra: Y=ABC
+
+
 class andgate3(circuit):
     def __init__(self, in1, in2, in3):
         self.in1_ = in1
@@ -93,6 +103,7 @@ class andgate3(circuit):
 
         return out_andg1
 
+
 class andgate4(circuit):
     def __init__(self, in1, in2, in3, in4):
         self.in1_ = in1
@@ -106,6 +117,7 @@ class andgate4(circuit):
 
         andg_0 = andgate(out_andg3_0, self.in4_)
         return andg_0.getCircuitOutput()
+
 
 class andgate5(circuit):
     def __init__(self, in1, in2, in3, in4, in5):
@@ -122,7 +134,9 @@ class andgate5(circuit):
         andg_0 = andgate(out_andg4_0, self.in5_)
         return andg_0.getCircuitOutput()
 
-#2to1 mux implemented by notgate, andgates and orgates
+# 2to1 mux implemented by notgate, andgates and orgates
+
+
 class mux_2to1(circuit):
     def __init__(self, d0, d1, s):
         self.d0_ = d0
@@ -132,15 +146,17 @@ class mux_2to1(circuit):
     def getCircuitOutput(self):
         not_s = notgate(self.s_)
         andg0 = andgate(self.d0_, not_s.getCircuitOutput())
-        andg1 = andgate(self.d1_,self.s_)
+        andg1 = andgate(self.d1_, self.s_)
         org0 = orgate(andg0.getCircuitOutput(), andg1.getCircuitOutput())
         out_org0 = org0.getCircuitOutput()
         return out_org0
 
 #mux = mux_2to1(1, 1, 1)
-#print(mux.getCircuitOutput())
+# print(mux.getCircuitOutput())
 
-#4to1 mux implemented by 2to1 muxes
+# 4to1 mux implemented by 2to1 muxes
+
+
 class mux_4to1(circuit):
     def __init__(self, d0, d1, d2, d3, s0, s1):
         self.d0_ = d0
@@ -153,13 +169,15 @@ class mux_4to1(circuit):
     def getCircuitOutput(self):
         mux0 = mux_2to1(self.d0_, self.d1_, self.s0_)
         out_mux0 = mux0.getCircuitOutput()
-        mux1 = mux_2to1(self.d2_,self.d3_, self.s0_)
+        mux1 = mux_2to1(self.d2_, self.d3_, self.s0_)
         out_mux1 = mux1.getCircuitOutput()
         mux2 = mux_2to1(out_mux0, out_mux1, self.s1_)
         out_mux2 = mux2.getCircuitOutput()
         return out_mux2
 
-#fulladder implemented with logic gates
+# fulladder implemented with logic gates
+
+
 class fulladder(circuit):
     def __init__(self, a, b, c_in):
         self.a_ = a
@@ -167,32 +185,32 @@ class fulladder(circuit):
         self.c_in_ = c_in
 
     def getCircuitOutputSum(self):
-        
+
         not_a = notgate(self.a_)
         not_b = notgate(self.b_)
         not_c_in = notgate(self.c_in_)
 
-        andg3_0 = andgate3(not_a.getCircuitOutput(), 
-                           not_b.getCircuitOutput(), 
-                           self.c_in_)
-                           
-        andg3_1 = andgate3(not_a.getCircuitOutput(), 
-                           self.b_, 
-                           not_c_in.getCircuitOutput())
-
-        andg3_2 = andgate3(self.a_, 
-                           not_b.getCircuitOutput(), 
-                           not_c_in.getCircuitOutput())
-                           
-        andg3_3 = andgate3(self.a_, 
-                           self.b_, 
+        andg3_0 = andgate3(not_a.getCircuitOutput(),
+                           not_b.getCircuitOutput(),
                            self.c_in_)
 
-        org4_0 = orgate4(andg3_0.getCircuitOutput(), 
-                         andg3_1.getCircuitOutput(), 
-                         andg3_2.getCircuitOutput(), 
+        andg3_1 = andgate3(not_a.getCircuitOutput(),
+                           self.b_,
+                           not_c_in.getCircuitOutput())
+
+        andg3_2 = andgate3(self.a_,
+                           not_b.getCircuitOutput(),
+                           not_c_in.getCircuitOutput())
+
+        andg3_3 = andgate3(self.a_,
+                           self.b_,
+                           self.c_in_)
+
+        org4_0 = orgate4(andg3_0.getCircuitOutput(),
+                         andg3_1.getCircuitOutput(),
+                         andg3_2.getCircuitOutput(),
                          andg3_3.getCircuitOutput())
-                         
+
         out_org4_0 = org4_0.getCircuitOutput()
         return out_org4_0
 
@@ -202,11 +220,12 @@ class fulladder(circuit):
         andg_1 = andgate(self.b_, self.c_in_)
         andg_2 = andgate(self.a_, self.c_in_)
 
-        org3_0 = orgate3(andg_0.getCircuitOutput(), 
-                         andg_1.getCircuitOutput(), 
+        org3_0 = orgate3(andg_0.getCircuitOutput(),
+                         andg_1.getCircuitOutput(),
                          andg_2.getCircuitOutput())
 
         return org3_0.getCircuitOutput()
+
 
 class decoderReg(circuit):
     def __init__(self, instr_reg_filed):
@@ -230,7 +249,8 @@ class decoderReg(circuit):
 
         output = [0] * 32
 
-        andg5_0 = andgate5(out_not_a, out_not_b, out_not_c, out_not_d, out_not_e)
+        andg5_0 = andgate5(out_not_a, out_not_b,
+                           out_not_c, out_not_d, out_not_e)
         output[0] = andg5_0.getCircuitOutput()
         andg5_1 = andgate5(out_not_a, out_not_b, out_not_c, out_not_d, self.e_)
         output[1] = andg5_1.getCircuitOutput()
@@ -262,7 +282,8 @@ class decoderReg(circuit):
         output[14] = andg5_14.getCircuitOutput()
         andg5_15 = andgate5(out_not_a, self.b_, self.c_, self.d_, self.e_)
         output[15] = andg5_15.getCircuitOutput()
-        andg5_16 = andgate5(self.a_, out_not_b, out_not_c, out_not_d, out_not_e)
+        andg5_16 = andgate5(self.a_, out_not_b, out_not_c,
+                            out_not_d, out_not_e)
         output[16] = andg5_16.getCircuitOutput()
         andg5_17 = andgate5(self.a_, out_not_b, out_not_c, out_not_d, self.e_)
         output[17] = andg5_17.getCircuitOutput()
@@ -297,11 +318,14 @@ class decoderReg(circuit):
 
         return output
 
-#1 bit ALU implemented with logic gates
+# 1 bit ALU implemented with logic gates
+
+
 class ALU_1bit(object):
     '''
     Implement a 1-bit ALU by using the above circuits, e.g.,  mux_2to1, fulladder and mux_4to1, etc.
     '''
+
 
 class aluControl(circuit):
     '''
@@ -335,5 +359,3 @@ class ALU_32bit(object):
 
 
     '''
-
-
