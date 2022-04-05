@@ -325,7 +325,7 @@ class ALUControl:
 
     def get_output(self):
         org_0 = OrGate(self._f0, self._f3)
-        andg_0 = AndGate(org_0.get_output(), self._alu_op0)
+        andg_0 = AndGate(org_0.get_output(), self._alu_op1)
         output = [andg_0.get_output()]
 
         notg_0 = NotGate(self._f2)
