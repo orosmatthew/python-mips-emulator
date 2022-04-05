@@ -323,6 +323,43 @@ class RegDecoder:
         return output
 
 
+class MainControl:
+    def __init__(self, op5: int, op4: int, op3: int, op2: int, op1: int, op0: int):
+        self._op5: int = op5
+        self._op4: int = op4
+        self._op3: int = op3
+        self._op2: int = op2
+        self._op1: int = op1
+        self._op0: int = op0
+
+    def get_output_reg_dst(self) -> int:
+        pass
+
+    def get_output_branch(self) -> int:
+        pass
+
+    def get_output_mem_read(self) -> int:
+        pass
+
+    def get_output_mem_reg(self) -> int:
+        pass
+
+    def get_output_alu_op0(self) -> int:
+        pass
+
+    def get_output_alu_op1(self) -> int:
+        pass
+
+    def get_output_mem_write(self) -> int:
+        pass
+
+    def get_output_alu_src(self) -> int:
+        pass
+
+    def get_output_reg_write(self) -> int:
+        pass
+
+
 class SignExt:
     def __init__(self, bits16: list[int]):
         self._bits16 = bits16
@@ -334,9 +371,18 @@ class SignExt:
 
 
 class ALU1Bit:
-    """
-    Implement a 1-bit ALU by using the above circuits, e.g.,  mux_2to1, FullAdder and mux_4to1, etc.
-    """
+    def __init__(self, a: int, b: int, carry_in: int, op0: int, op1: int):
+        self._a: int = a
+        self._b: int = b
+        self._carry_in: int = carry_in
+        self._op0: int = op0
+        self._op1: int = op1
+
+    def get_output_sum(self) -> int:
+        pass
+
+    def get_output_carry_out(self) -> int:
+        pass
 
 
 class ALUControl:
@@ -371,7 +417,36 @@ class ALUControl:
         return output
 
 
+class SimpleMIPS:
+    def __init__(self, reg_file: RegFile):
+        self._reg_file: RegFile = reg_file
+
+    def input_instruction(self, instr: list[int]):
+        pass
+
+    def get_output(self):
+        pass
+
+
 class ALU32Bit:
+    def __init__(self, a: list[int], b: list[int], carry_in: int, alu_ctrl_sig: list[int]):
+        self._a: list[int] = a
+        self._b: list[int] = b
+        self._carry_in: int = carry_in
+        self._alu_ctrl_sig: list[int] = alu_ctrl_sig
+
+    def get_output_overflow(self) -> int:
+        pass
+
+    def get_output_result(self) -> list[int]:
+        pass
+
+    def get_output_zero(self) -> int:
+        pass
+
+    def get_carry_out(self) -> int:
+        pass
+
     """
     Implement a 32 bit ALU by using the 1 bit ALU.
     Your 32-bit ALU should be able to compute 32-bit AND, OR, addition, subtraction, slt(set on if less than).

@@ -223,7 +223,7 @@ simple_mips_cpu = circuits.SimpleMIPS(reg_file)
 
 for instr in test_instruction_sequence:
 
-    simpleMIPSCPU.get_output(instr)
+    simple_mips_cpu.get_output(instr)
 
     print("After execute instruction: ", instr)
     registers_values = reg_file.get_all_reg_vals()
