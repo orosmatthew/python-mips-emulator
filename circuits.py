@@ -1,4 +1,4 @@
-class Circuit(object):
+class BasicCircuit(object):
     def __init__(self, in1: int, in2: int):
         self._in1: int = in1
         self._in2: int = in2
@@ -49,7 +49,7 @@ class RegFile:
         return self._regs
 
 
-class AndGate(Circuit):
+class AndGate(BasicCircuit):
     def get_output(self) -> int:
         if self._in1 == 1 and self._in2 == 1:
             return 1
@@ -57,7 +57,7 @@ class AndGate(Circuit):
             return 0
 
 
-class OrGate(Circuit):
+class OrGate(BasicCircuit):
     def get_output(self) -> int:
         if self._in1 == 0 and self._in2 == 0:
             return 0
@@ -65,7 +65,7 @@ class OrGate(Circuit):
             return 1
 
 
-class OrGate3(Circuit):
+class OrGate3(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int):
         super().__init__(in1, in2)
         self._in3: int = in3
@@ -79,7 +79,7 @@ class OrGate3(Circuit):
         return out_org1
 
 
-class OrGate4(Circuit):
+class OrGate4(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int):
         super().__init__(in1, in2)
         self._in3: int = in3
@@ -108,7 +108,7 @@ class NotGate:
             return 1
 
 
-class AndGate3(Circuit):
+class AndGate3(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int):
         super().__init__(in1, in2)
         self._in3: int = in3
@@ -123,7 +123,7 @@ class AndGate3(Circuit):
         return out_andg_1
 
 
-class AndGate4(Circuit):
+class AndGate4(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int):
         super().__init__(in1, in2)
         self._in3: int = in3
@@ -137,7 +137,7 @@ class AndGate4(Circuit):
         return andg_0.get_output()
 
 
-class AndGate5(Circuit):
+class AndGate5(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int, in5: int):
         super().__init__(in1, in2)
         self._in3: int = in3
