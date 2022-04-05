@@ -1,11 +1,7 @@
-__author__ = "Your names"
-__Copyright__ = "Copyright @2022"
-
-
 class Circuit(object):
-    def __init__(self, in1, in2):
-        self._in1 = in1
-        self._in2 = in2
+    def __init__(self, in1: int, in2: int):
+        self._in1: int = in1
+        self._in2: int = in2
 
 
 def bin32_to_dec(bin32: list[int]) -> int:
@@ -17,7 +13,7 @@ def bin32_to_dec(bin32: list[int]) -> int:
 
 
 class Memory:
-    def __init__(self, n_bytes: int, base_addr: list[int], initial_value: int) -> None:
+    def __init__(self, n_bytes: int, base_addr: list[int], initial_value: int):
         self._memory: list[int] = [initial_value] * n_bytes * 4 * 8
         self._base_addr: list[int] = base_addr
 
@@ -40,21 +36,21 @@ class Memory:
 
 
 class RegFile:
-    def __init__(self, reg_initial_value):
-        self._regs = [reg_initial_value] * 32
+    def __init__(self, reg_initial_value: list[int]):
+        self._regs: list[list[int]] = [reg_initial_value] * 32
 
-    def set_reg_val(self, o_reg_decoder, value_to_set):
+    def set_reg_val(self, o_reg_decoder: list[int], value_to_set: list[int]) -> None:
         self._regs[o_reg_decoder.index(1)] = value_to_set
 
-    def get_reg_val(self, o_reg_decoder):
+    def get_reg_val(self, o_reg_decoder: list[int]) -> list[int]:
         return self._regs[o_reg_decoder.index(1)]
 
-    def get_all_reg_vals(self):
+    def get_all_reg_vals(self) -> list[list[int]]:
         return self._regs
 
 
 class AndGate(Circuit):
-    def get_output(self):
+    def get_output(self) -> int:
         if self._in1 == 1 and self._in2 == 1:
             return 1
         else:
@@ -62,7 +58,7 @@ class AndGate(Circuit):
 
 
 class OrGate(Circuit):
-    def get_output(self):
+    def get_output(self) -> int:
         if self._in1 == 0 and self._in2 == 0:
             return 0
         else:
@@ -70,11 +66,11 @@ class OrGate(Circuit):
 
 
 class OrGate3(Circuit):
-    def __init__(self, in1, in2, in3):
+    def __init__(self, in1: int, in2: int, in3: int):
         super().__init__(in1, in2)
-        self._in3 = in3
+        self._in3: int = in3
 
-    def get_output(self):
+    def get_output(self) -> int:
         org0 = OrGate(self._in1, self._in2)
         out_org0 = org0.get_output()
 
@@ -84,12 +80,12 @@ class OrGate3(Circuit):
 
 
 class OrGate4(Circuit):
-    def __init__(self, in1, in2, in3, in4):
+    def __init__(self, in1: int, in2: int, in3: int, in4: int):
         super().__init__(in1, in2)
-        self._in3 = in3
-        self._in4 = in4
+        self._in3: int = in3
+        self._in4: int = in4
 
-    def get_output(self):
+    def get_output(self) -> int:
         org0 = OrGate(self._in1, self._in2)
         out_org0 = org0.get_output()
 
@@ -102,10 +98,10 @@ class OrGate4(Circuit):
 
 
 class NotGate:
-    def __init__(self, in1):
-        self._in1 = in1
+    def __init__(self, in1: int):
+        self._in1: int = in1
 
-    def get_output(self):
+    def get_output(self) -> int:
         if self._in1 == 1:
             return 0
         elif self._in1 == 0:
@@ -113,11 +109,11 @@ class NotGate:
 
 
 class AndGate3(Circuit):
-    def __init__(self, in1, in2, in3):
+    def __init__(self, in1: int, in2: int, in3: int):
         super().__init__(in1, in2)
-        self._in3 = in3
+        self._in3: int = in3
 
-    def get_output(self):
+    def get_output(self) -> int:
         andg_0 = AndGate(self._in1, self._in2)
         out_andg_0 = andg_0.get_output()
 
@@ -128,12 +124,12 @@ class AndGate3(Circuit):
 
 
 class AndGate4(Circuit):
-    def __init__(self, in1, in2, in3, in4):
+    def __init__(self, in1: int, in2: int, in3: int, in4: int):
         super().__init__(in1, in2)
-        self._in3 = in3
-        self._in4 = in4
+        self._in3: int = in3
+        self._in4: int = in4
 
-    def get_output(self):
+    def get_output(self) -> int:
         andg3_0 = AndGate3(self._in1, self._in2, self._in3)
         out_andg3_0 = andg3_0.get_output()
 
@@ -142,13 +138,13 @@ class AndGate4(Circuit):
 
 
 class AndGate5(Circuit):
-    def __init__(self, in1, in2, in3, in4, in5):
+    def __init__(self, in1: int, in2: int, in3: int, in4: int, in5: int):
         super().__init__(in1, in2)
-        self._in3 = in3
-        self._in4 = in4
-        self._in5 = in5
+        self._in3: int = in3
+        self._in4: int = in4
+        self._in5: int = in5
 
-    def get_output(self):
+    def get_output(self) -> int:
         andg4_0 = AndGate4(self._in1, self._in2, self._in3, self._in4)
         out_andg4_0 = andg4_0.get_output()
 
@@ -158,11 +154,11 @@ class AndGate5(Circuit):
 
 class Mux2To1:
     def __init__(self, d0, d1, s):
-        self._d0 = d0
-        self._d1 = d1
-        self._s = s
+        self._d0: int = d0
+        self._d1: int = d1
+        self._s: int = s
 
-    def get_output(self):
+    def get_output(self) -> int:
         not_s = NotGate(self._s)
         andg0 = AndGate(self._d0, not_s.get_output())
         andg1 = AndGate(self._d1, self._s)
@@ -173,14 +169,14 @@ class Mux2To1:
 
 class Mux4To1:
     def __init__(self, d0, d1, d2, d3, s0, s1):
-        self._d0 = d0
-        self._d1 = d1
-        self._d2 = d2
-        self._d3 = d3
-        self._s0 = s0
-        self._s1 = s1
+        self._d0: int = d0
+        self._d1: int = d1
+        self._d2: int = d2
+        self._d3: int = d3
+        self._s0: int = s0
+        self._s1: int = s1
 
-    def get_output(self):
+    def get_output(self) -> int:
         mux0 = Mux2To1(self._d0, self._d1, self._s0)
         out_mux0 = mux0.get_output()
         mux1 = Mux2To1(self._d2, self._d3, self._s0)
@@ -191,12 +187,12 @@ class Mux4To1:
 
 
 class FullAdder:
-    def __init__(self, a, b, c_in):
-        self._a = a
-        self._b = b
-        self._c_in = c_in
+    def __init__(self, a: int, b: int, c_in: int):
+        self._a: int = a
+        self._b: int = b
+        self._c_in: int = c_in
 
-    def get_output_sum(self):
+    def get_output_sum(self) -> int:
         not_a = NotGate(self._a)
         not_b = NotGate(self._b)
         not_c_in = NotGate(self._c_in)
@@ -225,7 +221,7 @@ class FullAdder:
         out_org4_0 = org4_0.get_output()
         return out_org4_0
 
-    def get_output_carry(self):
+    def get_output_carry(self) -> int:
         andg_0 = AndGate(self._a, self._b)
         andg_1 = AndGate(self._b, self._c_in)
         andg_2 = AndGate(self._a, self._c_in)
@@ -238,14 +234,14 @@ class FullAdder:
 
 
 class RegDecoder:
-    def __init__(self, instr_reg):
-        self._a = instr_reg[0]
-        self._b = instr_reg[1]
-        self._c = instr_reg[2]
-        self._d = instr_reg[3]
-        self._e = instr_reg[4]
+    def __init__(self, instr_reg: list[int]):
+        self._a: int = instr_reg[0]
+        self._b: int = instr_reg[1]
+        self._c: int = instr_reg[2]
+        self._d: int = instr_reg[3]
+        self._e: int = instr_reg[4]
 
-    def get_output(self):
+    def get_output(self) -> list[int]:
         not_a = NotGate(self._a)
         out_not_a = not_a.get_output()
         not_b = NotGate(self._b)
@@ -328,10 +324,10 @@ class RegDecoder:
 
 
 class SignExt:
-    def __init__(self, bits16):
+    def __init__(self, bits16: list[int]):
         self._bits16 = bits16
 
-    def get_output(self):
+    def get_output(self) -> list[int]:
         output = [self._bits16[0]] * 16
         output.extend(self._bits16)
         return output
@@ -344,17 +340,17 @@ class ALU1Bit:
 
 
 class ALUControl:
-    def __init__(self, f0, f1, f2, f3, f4, f5, alu_op0, alu_op1):
-        self._f0 = f0
-        self._f1 = f1
-        self._f2 = f2
-        self._f3 = f3
-        self._f4 = f4
-        self._f5 = f5
-        self._alu_op0 = alu_op0
-        self._alu_op1 = alu_op1
+    def __init__(self, f0: int, f1: int, f2: int, f3: int, f4: int, f5: int, alu_op0: int, alu_op1: int):
+        self._f0: int = f0
+        self._f1: int = f1
+        self._f2: int = f2
+        self._f3: int = f3
+        self._f4: int = f4
+        self._f5: int = f5
+        self._alu_op0: int = alu_op0
+        self._alu_op1: int = alu_op1
 
-    def get_output(self):
+    def get_output(self) -> list[int]:
         org_0 = OrGate(self._f0, self._f3)
         andg_0 = AndGate(org_0.get_output(), self._alu_op1)
         output = [andg_0.get_output()]
