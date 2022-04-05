@@ -8,6 +8,37 @@ class Circuit(object):
         self._in2 = in2
 
 
+def bin32_to_dec(bin32: list[int]) -> int:
+    num: int = 0
+    for p in range(16):
+        if bin32[31 - p] == 1:
+            num += pow(2, p)
+    return num
+
+
+class Memory:
+    def __init__(self, n_bytes: int, base_addr: list[int], initial_value: int) -> None:
+        self._memory: list[int] = [initial_value] * n_bytes * 4 * 8
+        self._base_addr: list[int] = base_addr
+
+    def set_mem_val(self, addr: list[int], value_to_set: list[int]) -> None:
+        index: int = (bin32_to_dec(addr) - bin32_to_dec(self._base_addr)) * 8
+        if index < 0 or index > (len(self._memory) - 1):
+            print("Invalid memory address!")
+            return
+        offset: int = index
+        for v in value_to_set:
+            self._memory[offset] = v
+            offset += 1
+
+    def get_mem_val(self, addr: list[int]) -> list[int]:
+        index: int = (bin32_to_dec(addr) - bin32_to_dec(self._base_addr)) * 8
+        if index < 0 or index > (len(self._memory) - 1):
+            print("Invalid memory address!")
+            return []
+        return self._memory[index:index + 32]
+
+
 class RegFile:
     def __init__(self, reg_initial_value):
         self._regs = [reg_initial_value] * 32
