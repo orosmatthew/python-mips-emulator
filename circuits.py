@@ -104,7 +104,7 @@ class NotGate:
     def get_output(self) -> int:
         if self._in1 == 1:
             return 0
-        elif self._in1 == 0:
+        else:
             return 1
 
 
@@ -153,7 +153,7 @@ class AndGate5(Circuit):
 
 
 class Mux2To1:
-    def __init__(self, d0, d1, s):
+    def __init__(self, d0: int, d1: int, s: int):
         self._d0: int = d0
         self._d1: int = d1
         self._s: int = s
@@ -168,7 +168,7 @@ class Mux2To1:
 
 
 class Mux4To1:
-    def __init__(self, d0, d1, d2, d3, s0, s1):
+    def __init__(self, d0: int, d1: int, d2: int, d3: int, s0: int, s1: int):
         self._d0: int = d0
         self._d1: int = d1
         self._d2: int = d2
