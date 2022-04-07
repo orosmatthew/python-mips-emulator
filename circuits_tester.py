@@ -217,16 +217,16 @@ test_instruction_sequence = [
 
 reg_initial_value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
-reg_file = circuits.RegFile(reg_initial_value)
+reg_data = circuits.RegData(reg_initial_value)
 
-simple_mips_cpu = circuits.SimpleMIPS(reg_file)
+simple_mips_cpu = circuits.SimpleMIPS(reg_data)
 
 for instr in test_instruction_sequence:
 
-    simple_mips_cpu.get_output(instr)
+    simple_mips_cpu.input_instruction(instr)
 
     print("After execute instruction: ", instr)
-    registers_values = reg_file.get_all_reg_vals()
+    registers_values = reg_data.get_all_reg_vals()
     for i in range(0, len(registers_values)):
         print("Register ", i, ": ", registers_values[i])
     print(" ")
