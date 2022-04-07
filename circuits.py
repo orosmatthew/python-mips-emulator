@@ -428,14 +428,18 @@ class ALUControl:
 
 
 class SimpleMIPS:
-    def __init__(self, reg_file: RegData):
-        self._reg_file: RegData = reg_file
+    def __init__(self, reg_data: RegData, mem_data: MemData):
+        self._reg_data: RegData = reg_data
+        self._mem_data: MemData = mem_data
 
     def input_instruction(self, instr: list[int]):
         pass
 
-    def get_output(self):
-        pass
+    def get_reg_data(self) -> RegData:
+        return self._reg_data
+
+    def get_mem_data(self) -> MemData:
+        return self._mem_data
 
 
 class ALU32Bit:
