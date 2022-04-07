@@ -12,7 +12,7 @@ def bin32_to_dec(bin32: list[int]) -> int:
     return num
 
 
-class Memory:
+class MemData:
     def __init__(self, n_bytes: int, base_addr: list[int], initial_value: int):
         self._memory: list[int] = [initial_value] * n_bytes * 4 * 8
         self._base_addr: list[int] = base_addr
@@ -35,7 +35,26 @@ class Memory:
         return self._memory[index:index + 32]
 
 
-class RegFile:
+class Memory:
+    def __init__(self, mem_data: MemData, mem_write: int, mem_read: int, address: list[int], write_data: list[int]):
+        self._mem_data: MemData = mem_data
+        self._mem_write: int = mem_write
+        self._mem_read: int = mem_read
+        self._address: list[int] = address
+        self._write_data: list[int] = write_data
+
+    def get_output_read_data(self) -> list[int]:
+        return_data: list[int] = [0] * 32
+        if self._mem_read == 1:
+            return_data = self._mem_data.get_mem_val(self._address)
+
+        if self._mem_write == 1:
+            self._mem_data.set_mem_val(self._address, self._write_data)
+
+        return return_data
+
+
+class RegData:
     def __init__(self, reg_initial_value: list[int]):
         self._regs: list[list[int]] = [reg_initial_value] * 32
 
@@ -47,6 +66,124 @@ class RegFile:
 
     def get_all_reg_vals(self) -> list[list[int]]:
         return self._regs
+
+
+class RegDecoder:
+    def __init__(self, instr_reg: list[int]):
+        self._a: int = instr_reg[0]
+        self._b: int = instr_reg[1]
+        self._c: int = instr_reg[2]
+        self._d: int = instr_reg[3]
+        self._e: int = instr_reg[4]
+
+    def get_output(self) -> list[int]:
+        not_a = NotGate(self._a)
+        out_not_a = not_a.get_output()
+        not_b = NotGate(self._b)
+        out_not_b = not_b.get_output()
+        not_c = NotGate(self._c)
+        out_not_c = not_c.get_output()
+        not_d = NotGate(self._d)
+        out_not_d = not_d.get_output()
+        not_e = NotGate(self._e)
+        out_not_e = not_e.get_output()
+
+        output = [0] * 32
+
+        andg5_0 = AndGate5(out_not_a, out_not_b, out_not_c, out_not_d, out_not_e)
+        output[0] = andg5_0.get_output()
+        andg5_1 = AndGate5(out_not_a, out_not_b, out_not_c, out_not_d, self._e)
+        output[1] = andg5_1.get_output()
+        andg5_2 = AndGate5(out_not_a, out_not_b, out_not_c, self._d, out_not_e)
+        output[2] = andg5_2.get_output()
+        andg5_3 = AndGate5(out_not_a, out_not_b, out_not_c, self._d, self._e)
+        output[3] = andg5_3.get_output()
+        andg5_4 = AndGate5(out_not_a, out_not_b, self._c, out_not_d, out_not_e)
+        output[4] = andg5_4.get_output()
+        andg5_5 = AndGate5(out_not_a, out_not_b, self._c, out_not_d, self._e)
+        output[5] = andg5_5.get_output()
+        andg5_6 = AndGate5(out_not_a, out_not_b, self._c, self._d, out_not_e)
+        output[6] = andg5_6.get_output()
+        andg5_7 = AndGate5(out_not_a, out_not_b, self._c, self._d, self._e)
+        output[7] = andg5_7.get_output()
+        andg5_8 = AndGate5(out_not_a, self._b, out_not_c, out_not_d, out_not_e)
+        output[8] = andg5_8.get_output()
+        andg5_9 = AndGate5(out_not_a, self._b, out_not_c, out_not_d, self._e)
+        output[9] = andg5_9.get_output()
+        andg5_10 = AndGate5(out_not_a, self._b, out_not_c, self._d, out_not_e)
+        output[10] = andg5_10.get_output()
+        andg5_11 = AndGate5(out_not_a, self._b, out_not_c, self._d, self._e)
+        output[11] = andg5_11.get_output()
+        andg5_12 = AndGate5(out_not_a, self._b, self._c, out_not_d, out_not_e)
+        output[12] = andg5_12.get_output()
+        andg5_13 = AndGate5(out_not_a, self._b, self._c, out_not_d, self._e)
+        output[13] = andg5_13.get_output()
+        andg5_14 = AndGate5(out_not_a, self._b, self._c, self._d, out_not_e)
+        output[14] = andg5_14.get_output()
+        andg5_15 = AndGate5(out_not_a, self._b, self._c, self._d, self._e)
+        output[15] = andg5_15.get_output()
+        andg5_16 = AndGate5(self._a, out_not_b, out_not_c, out_not_d, out_not_e)
+        output[16] = andg5_16.get_output()
+        andg5_17 = AndGate5(self._a, out_not_b, out_not_c, out_not_d, self._e)
+        output[17] = andg5_17.get_output()
+        andg5_18 = AndGate5(self._a, out_not_b, out_not_c, self._d, out_not_e)
+        output[18] = andg5_18.get_output()
+        andg5_19 = AndGate5(self._a, out_not_b, out_not_c, self._d, self._e)
+        output[19] = andg5_19.get_output()
+        andg5_20 = AndGate5(self._a, out_not_b, self._c, out_not_d, out_not_e)
+        output[20] = andg5_20.get_output()
+        andg5_21 = AndGate5(self._a, out_not_b, self._c, out_not_d, self._e)
+        output[21] = andg5_21.get_output()
+        andg5_22 = AndGate5(self._a, out_not_b, self._c, self._d, out_not_e)
+        output[22] = andg5_22.get_output()
+        andg5_23 = AndGate5(self._a, out_not_b, self._c, self._d, self._e)
+        output[23] = andg5_23.get_output()
+        andg5_24 = AndGate5(self._a, self._b, out_not_c, out_not_d, out_not_e)
+        output[24] = andg5_24.get_output()
+        andg5_25 = AndGate5(self._a, self._b, out_not_c, out_not_d, self._e)
+        output[25] = andg5_25.get_output()
+        andg5_26 = AndGate5(self._a, self._b, out_not_c, self._d, out_not_e)
+        output[26] = andg5_26.get_output()
+        andg5_27 = AndGate5(self._a, self._b, out_not_c, self._d, self._e)
+        output[27] = andg5_27.get_output()
+        andg5_28 = AndGate5(self._a, self._b, self._c, out_not_d, out_not_e)
+        output[28] = andg5_28.get_output()
+        andg5_29 = AndGate5(self._a, self._b, self._c, out_not_d, self._e)
+        output[29] = andg5_29.get_output()
+        andg5_30 = AndGate5(self._a, self._b, self._c, self._d, out_not_e)
+        output[30] = andg5_30.get_output()
+        andg5_31 = AndGate5(self._a, self._b, self._c, self._d, self._e)
+        output[31] = andg5_31.get_output()
+
+        return output
+
+
+class Registry:
+    def __init__(self, reg_data: RegData, reg_write: int, read_reg_1: list[int], read_reg_2: list[int],
+                 write_reg: list[int], write_data: list[int]):
+        self._reg_data: RegData = reg_data
+        self._reg_write: int = reg_write
+        self._read_reg_1: list[int] = read_reg_1
+        self._read_reg_2: list[int] = read_reg_2
+        self._write_reg: list[int] = write_reg
+        self._write_data: list[int] = write_data
+
+        if self._reg_write == 1:
+            reg_dec: RegDecoder = RegDecoder(self._write_reg)
+            self._reg_data.set_reg_val(reg_dec.get_output(), self._write_data)
+
+    def get_output_read(self) -> (list[int], list[int]):
+        reg_dec1: RegDecoder = RegDecoder(self._read_reg_1)
+        reg_dec2: RegDecoder = RegDecoder(self._read_reg_2)
+
+        read_data: (list[int], list[int]) = (self._reg_data.get_reg_val(reg_dec1.get_output()),
+                                             self._reg_data.get_reg_val(reg_dec2.get_output()))
+
+        if self._reg_write == 1:
+            reg_dec_w: RegDecoder = RegDecoder(self._write_reg)
+            self._reg_data.set_reg_val(reg_dec_w.get_output(), self._write_data)
+
+        return read_data
 
 
 class AndGate(BasicCircuit):
@@ -233,133 +370,6 @@ class FullAdder:
         return org3_0.get_output()
 
 
-class RegDecoder:
-    def __init__(self, instr_reg: list[int]):
-        self._a: int = instr_reg[0]
-        self._b: int = instr_reg[1]
-        self._c: int = instr_reg[2]
-        self._d: int = instr_reg[3]
-        self._e: int = instr_reg[4]
-
-    def get_output(self) -> list[int]:
-        not_a = NotGate(self._a)
-        out_not_a = not_a.get_output()
-        not_b = NotGate(self._b)
-        out_not_b = not_b.get_output()
-        not_c = NotGate(self._c)
-        out_not_c = not_c.get_output()
-        not_d = NotGate(self._d)
-        out_not_d = not_d.get_output()
-        not_e = NotGate(self._e)
-        out_not_e = not_e.get_output()
-
-        output = [0] * 32
-
-        andg5_0 = AndGate5(out_not_a, out_not_b, out_not_c, out_not_d, out_not_e)
-        output[0] = andg5_0.get_output()
-        andg5_1 = AndGate5(out_not_a, out_not_b, out_not_c, out_not_d, self._e)
-        output[1] = andg5_1.get_output()
-        andg5_2 = AndGate5(out_not_a, out_not_b, out_not_c, self._d, out_not_e)
-        output[2] = andg5_2.get_output()
-        andg5_3 = AndGate5(out_not_a, out_not_b, out_not_c, self._d, self._e)
-        output[3] = andg5_3.get_output()
-        andg5_4 = AndGate5(out_not_a, out_not_b, self._c, out_not_d, out_not_e)
-        output[4] = andg5_4.get_output()
-        andg5_5 = AndGate5(out_not_a, out_not_b, self._c, out_not_d, self._e)
-        output[5] = andg5_5.get_output()
-        andg5_6 = AndGate5(out_not_a, out_not_b, self._c, self._d, out_not_e)
-        output[6] = andg5_6.get_output()
-        andg5_7 = AndGate5(out_not_a, out_not_b, self._c, self._d, self._e)
-        output[7] = andg5_7.get_output()
-        andg5_8 = AndGate5(out_not_a, self._b, out_not_c, out_not_d, out_not_e)
-        output[8] = andg5_8.get_output()
-        andg5_9 = AndGate5(out_not_a, self._b, out_not_c, out_not_d, self._e)
-        output[9] = andg5_9.get_output()
-        andg5_10 = AndGate5(out_not_a, self._b, out_not_c, self._d, out_not_e)
-        output[10] = andg5_10.get_output()
-        andg5_11 = AndGate5(out_not_a, self._b, out_not_c, self._d, self._e)
-        output[11] = andg5_11.get_output()
-        andg5_12 = AndGate5(out_not_a, self._b, self._c, out_not_d, out_not_e)
-        output[12] = andg5_12.get_output()
-        andg5_13 = AndGate5(out_not_a, self._b, self._c, out_not_d, self._e)
-        output[13] = andg5_13.get_output()
-        andg5_14 = AndGate5(out_not_a, self._b, self._c, self._d, out_not_e)
-        output[14] = andg5_14.get_output()
-        andg5_15 = AndGate5(out_not_a, self._b, self._c, self._d, self._e)
-        output[15] = andg5_15.get_output()
-        andg5_16 = AndGate5(self._a, out_not_b, out_not_c, out_not_d, out_not_e)
-        output[16] = andg5_16.get_output()
-        andg5_17 = AndGate5(self._a, out_not_b, out_not_c, out_not_d, self._e)
-        output[17] = andg5_17.get_output()
-        andg5_18 = AndGate5(self._a, out_not_b, out_not_c, self._d, out_not_e)
-        output[18] = andg5_18.get_output()
-        andg5_19 = AndGate5(self._a, out_not_b, out_not_c, self._d, self._e)
-        output[19] = andg5_19.get_output()
-        andg5_20 = AndGate5(self._a, out_not_b, self._c, out_not_d, out_not_e)
-        output[20] = andg5_20.get_output()
-        andg5_21 = AndGate5(self._a, out_not_b, self._c, out_not_d, self._e)
-        output[21] = andg5_21.get_output()
-        andg5_22 = AndGate5(self._a, out_not_b, self._c, self._d, out_not_e)
-        output[22] = andg5_22.get_output()
-        andg5_23 = AndGate5(self._a, out_not_b, self._c, self._d, self._e)
-        output[23] = andg5_23.get_output()
-        andg5_24 = AndGate5(self._a, self._b, out_not_c, out_not_d, out_not_e)
-        output[24] = andg5_24.get_output()
-        andg5_25 = AndGate5(self._a, self._b, out_not_c, out_not_d, self._e)
-        output[25] = andg5_25.get_output()
-        andg5_26 = AndGate5(self._a, self._b, out_not_c, self._d, out_not_e)
-        output[26] = andg5_26.get_output()
-        andg5_27 = AndGate5(self._a, self._b, out_not_c, self._d, self._e)
-        output[27] = andg5_27.get_output()
-        andg5_28 = AndGate5(self._a, self._b, self._c, out_not_d, out_not_e)
-        output[28] = andg5_28.get_output()
-        andg5_29 = AndGate5(self._a, self._b, self._c, out_not_d, self._e)
-        output[29] = andg5_29.get_output()
-        andg5_30 = AndGate5(self._a, self._b, self._c, self._d, out_not_e)
-        output[30] = andg5_30.get_output()
-        andg5_31 = AndGate5(self._a, self._b, self._c, self._d, self._e)
-        output[31] = andg5_31.get_output()
-
-        return output
-
-
-class MainControl:
-    def __init__(self, op5: int, op4: int, op3: int, op2: int, op1: int, op0: int):
-        self._op5: int = op5
-        self._op4: int = op4
-        self._op3: int = op3
-        self._op2: int = op2
-        self._op1: int = op1
-        self._op0: int = op0
-
-    def get_output_reg_dst(self) -> int:
-        pass
-
-    def get_output_branch(self) -> int:
-        pass
-
-    def get_output_mem_read(self) -> int:
-        pass
-
-    def get_output_mem_reg(self) -> int:
-        pass
-
-    def get_output_alu_op0(self) -> int:
-        pass
-
-    def get_output_alu_op1(self) -> int:
-        pass
-
-    def get_output_mem_write(self) -> int:
-        pass
-
-    def get_output_alu_src(self) -> int:
-        pass
-
-    def get_output_reg_write(self) -> int:
-        pass
-
-
 class SignExt:
     def __init__(self, bits16: list[int]):
         self._bits16 = bits16
@@ -418,8 +428,8 @@ class ALUControl:
 
 
 class SimpleMIPS:
-    def __init__(self, reg_file: RegFile):
-        self._reg_file: RegFile = reg_file
+    def __init__(self, reg_file: RegData):
+        self._reg_file: RegData = reg_file
 
     def input_instruction(self, instr: list[int]):
         pass
