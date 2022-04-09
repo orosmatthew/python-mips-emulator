@@ -172,11 +172,11 @@ class Registry:
             reg_dec: RegDecoder = RegDecoder(self._write_reg)
             self._reg_data.set_reg_val(reg_dec.get_output(), self._write_data)
 
-    def get_output_read(self) -> (list[int], list[int]):
+    def get_output_read(self) -> tuple[list[int], list[int]]:
         reg_dec1: RegDecoder = RegDecoder(self._read_reg_1)
         reg_dec2: RegDecoder = RegDecoder(self._read_reg_2)
 
-        read_data: (list[int], list[int]) = (self._reg_data.get_reg_val(reg_dec1.get_output()),
+        read_data: tuple[list[int], list[int]] = (self._reg_data.get_reg_val(reg_dec1.get_output()),
                                              self._reg_data.get_reg_val(reg_dec2.get_output()))
 
         if self._reg_write == 1:
@@ -381,18 +381,38 @@ class SignExt:
 
 
 class ALU1Bit:
-    def __init__(self, a: int, b: int, carry_in: int, op0: int, op1: int):
-        self._a: int = a
-        self._b: int = b
+    def __init__(self, A, B, functionCode, carry_in, Less):
+        self._a: int = A
+        self._b: int = B
+        self._aInv: int = functionCode[0]
+        self._bInv: int = functionCode[1]
         self._carry_in: int = carry_in
-        self._op0: int = op0
-        self._op1: int = op1
-
+        #Remember that the last bit is most signficant which is why op1 is the third value of the array and op0 is last.   
+        self._op1: int = functionCode[2]
+        self._op0: int = functionCode[3]
+        self._less:int=Less
     def get_output_sum(self) -> int:
-        pass
+        Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv) 
+        Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
 
-    def get_output_carry_out(self) -> int:
+
+        Andgate_0 = AndGate(Mux2To1_0.get_output(), Mux2To1_1.get_output()).get_output()
+        OrGate_0 = OrGate(Mux2To1_0.get_output(), Mux2To1_1.get_output()).get_output()
+        FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in).get_output_sum()    
+        #This value is just being used as a placeholder for Less/Set. 
+
+        Mux4To1_0 = Mux4To1(Andgate_0, OrGate_0, FullAdder_0, self._less, self._op0, self._op1)
+        return Mux4To1_0.get_output()
+
+    def get_output_overflow(self) -> int:
         pass
+    
+    def get_output_carry_out(self) -> int:
+       Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv) 
+       Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
+       FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in)
+       return FullAdder_0.get_output_carry()
+
 
 
 class ALUControl:
@@ -425,7 +445,6 @@ class ALUControl:
         andg_2 = AndGate(self._alu_op0, notg_2.get_output())
         output.append(andg_2.get_output())
         return output
-
 
 class SimpleMIPS:
     def __init__(self, reg_data: RegData, mem_data: MemData):
@@ -486,3 +505,13 @@ class ALU32Bit:
     And please also note that in order to make slt work, we need to use the sum output from the adder of the 31st 1-bit
     ALU and make it as the less input of the 0th 1bit ALU.
     """
+
+
+
+#ALU test code
+test = [0,1,1,0]
+
+ALU1Bit_0 = ALU1Bit(1,1, test, 0, 0)
+
+print(ALU1Bit_0.get_output_sum())
+print(ALU1Bit_0.get_output_carry_out())
