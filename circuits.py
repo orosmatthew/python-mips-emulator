@@ -177,7 +177,7 @@ class Registry:
         reg_dec2: RegDecoder = RegDecoder(self._read_reg_2)
 
         read_data: tuple[list[int], list[int]] = (self._reg_data.get_reg_val(reg_dec1.get_output()),
-                                             self._reg_data.get_reg_val(reg_dec2.get_output()))
+                                                  self._reg_data.get_reg_val(reg_dec2.get_output()))
 
         if self._reg_write == 1:
             reg_dec_w: RegDecoder = RegDecoder(self._write_reg)
@@ -289,6 +289,22 @@ class AndGate5(BasicCircuit):
         return andg_0.get_output()
 
 
+class AndGate6(BasicCircuit):
+    def __init__(self, in1: int, in2: int, in3: int, in4: int, in5: int, in6: int):
+        super().__init__(in1, in2)
+        self._in3: int = in3
+        self._in4: int = in4
+        self._in5: int = in5
+        self._in6: int = in6
+
+    def get_output(self) -> int:
+        andg5_0 = AndGate5(self._in1, self._in2, self._in3, self._in4, self._in5)
+        out_andg5_0 = andg5_0.get_output()
+
+        andg_0 = AndGate(out_andg5_0, self._in6)
+        return andg_0.get_output()
+
+
 class Mux2To1:
     def __init__(self, d0: int, d1: int, s: int):
         self._d0: int = d0
@@ -387,32 +403,112 @@ class ALU1Bit:
         self._aInv: int = functionCode[0]
         self._bInv: int = functionCode[1]
         self._carry_in: int = carry_in
-        #Remember that the last bit is most signficant which is why op1 is the third value of the array and op0 is last.   
+        # Remember that the last bit is most signficant which is why op1 is the third value of the array and op0 is last.
         self._op1: int = functionCode[2]
         self._op0: int = functionCode[3]
-        self._less:int=Less
-    def get_output_sum(self) -> int:
-        Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv) 
-        Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
+        self._less: int = Less
 
+    def get_output_result(self) -> int:
+        Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv)
+        Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
 
         Andgate_0 = AndGate(Mux2To1_0.get_output(), Mux2To1_1.get_output()).get_output()
         OrGate_0 = OrGate(Mux2To1_0.get_output(), Mux2To1_1.get_output()).get_output()
-        FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in).get_output_sum()    
-        #This value is just being used as a placeholder for Less/Set. 
+        FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in).get_output_sum()
+        # This value is just being used as a placeholder for Less/Set.
 
         Mux4To1_0 = Mux4To1(Andgate_0, OrGate_0, FullAdder_0, self._less, self._op0, self._op1)
         return Mux4To1_0.get_output()
 
     def get_output_overflow(self) -> int:
-        pass
-    
-    def get_output_carry_out(self) -> int:
-       Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv) 
-       Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
-       FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in)
-       return FullAdder_0.get_output_carry()
+        Result = self.get_output_result()
+        NotResult = NotGate(self.get_output_result())
+        A = self._a
+        NotA = NotGate(self._a)
+        B = self._b
+        NotB = NotGate(self._b)
 
+        AndGate1 = AndGate3(NotResult.get_output(), A, B)
+        AndGate2 = AndGate3(Result, NotA.get_output(), NotB.get_output())
+
+        OrGateResult = OrGate(AndGate1.get_output(), AndGate2.get_output())
+        return OrGateResult.get_output()
+
+    def get_output_carry_out(self) -> int:
+        Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv)
+        Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
+        FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in)
+        return FullAdder_0.get_output_carry()
+
+    def get_output_set(self) -> int:
+        Mux2To1_0 = Mux2To1(self._a, NotGate(self._a).get_output(), self._aInv)
+        Mux2To1_1 = Mux2To1(self._b, NotGate(self._b).get_output(), self._bInv)
+
+        FullAdder_0 = FullAdder(Mux2To1_0.get_output(), Mux2To1_1.get_output(), self._carry_in).get_output_sum()
+        return FullAdder_0
+
+
+class MainControl:
+    def __init__(self, Op5: int, Op4: int, Op3: int, Op2: int, Op1: int, Op0: int):
+        self._Op0: int = Op0
+        self._Op1: int = Op1
+        self._Op2: int = Op2
+        self._Op3: int = Op3
+        self._Op4: int = Op4
+        self._Op5: int = Op5
+        self._notOp0 = NotGate(self._Op0).get_output()
+        self._notOp1 = NotGate(self._Op1).get_output()
+        self._notOp2 = NotGate(self._Op2).get_output()
+        self._notOp3 = NotGate(self._Op3).get_output()
+        self._notOp4 = NotGate(self._Op4).get_output()
+        self._notOp5 = NotGate(self._Op5).get_output()
+
+    def _get_output_R(self):
+        andGate1 = AndGate6(self._notOp0, self._notOp1, self._notOp2, self._notOp3, self._notOp4,
+                            self._notOp5).get_output()
+        return andGate1
+
+    def _get_output_lw(self):
+        andGate2 = AndGate6(self._Op0, self._Op1, self._notOp2, self._notOp3, self._notOp4, self._Op5).get_output()
+        return andGate2
+
+    def _get_ouput_sw(self):
+        andGate3 = AndGate6(self._Op0, self._Op1, self._notOp2, self._Op3, self._notOp4, self._Op5).get_output()
+        return andGate3
+
+    def _get_output_beq(self):
+        andGate4 = AndGate6(self._notOp0, self._notOp1, self._Op2, self._notOp3, self._notOp4,
+                            self._notOp5).get_output()
+        return andGate4
+
+    def get_RegDst(self):
+        return self._get_output_R()
+
+    def get_ALUSrc(self):
+        orGate1 = OrGate(self._get_output_lw(), self._get_ouput_sw()).get_output()
+        return orGate1
+
+    def get_MemtoReg(self):
+        return self._get_output_lw()
+
+    def get_RegWrite(self):
+        orGate2 = OrGate(self._get_output_R(), self._get_output_lw()).get_output()
+        return orGate2
+
+    def get_MemRead(self):
+        return self._get_output_lw()
+
+    def get_MemWrite(self):
+        return self._get_ouput_sw()
+
+    def get_Branch(self):
+        return self._get_output_beq()
+
+    def get_ALUOP(self):
+        ALUOp = []
+        ALUOp.append(self._get_output_R())
+        ALUOp.append(self._get_output_beq())
+        return ALUOp
 
 
 class ALUControl:
@@ -446,6 +542,7 @@ class ALUControl:
         output.append(andg_2.get_output())
         return output
 
+
 class SimpleMIPS:
     def __init__(self, reg_data: RegData, mem_data: MemData):
         self._reg_data: RegData = reg_data
@@ -454,12 +551,19 @@ class SimpleMIPS:
     def input_instruction(self, instr: list[int]):
         pass
 
+    # main_control = MainControl(instr[0], instr[1], instr[2], instr[3], instr[4], instr[5])
+
+    # regs = Registry()
+
     def get_reg_data(self) -> RegData:
         return self._reg_data
 
     def get_mem_data(self) -> MemData:
         return self._mem_data
 
+
+# m = SimpleMIPS(RegData([0] * 32), MemData(256, [0] * 32, 0))
+# m.input_instruction([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 class ALU32Bit:
     def __init__(self, a: list[int], b: list[int], carry_in: int, alu_ctrl_sig: list[int]):
@@ -469,49 +573,88 @@ class ALU32Bit:
         self._alu_ctrl_sig: list[int] = alu_ctrl_sig
 
     def get_output_overflow(self) -> int:
-        pass
+        result = self.get_output_result()[0]
+        not_result = NotGate(self.get_output_result()[0])
+        not_a = NotGate(self._a[0])
+        not_b = NotGate(self._b[0])
+
+        andg_1 = AndGate3(not_result.get_output(), self._a[0], self._b[0])
+        andg_2 = AndGate3(result, not_a.get_output(), not_b.get_output())
+
+        org_1 = OrGate(andg_1.get_output(), andg_2.get_output())
+        return org_1.get_output()
 
     def get_output_result(self) -> list[int]:
-        pass
+
+        result: list[int] = [0] * 32
+
+        carry: int = self._carry_in
+        alu_set: int = 0
+        for i in reversed(range(32)):  # 0 -> 31
+            alu = ALU1Bit(self._a[i], self._b[i], self._alu_ctrl_sig, carry, 0)
+            carry = alu.get_output_carry_out()
+            result[i] = alu.get_output_result()
+            alu_set = alu.get_output_set()
+
+        alu = ALU1Bit(self._a[0], self._b[0], self._alu_ctrl_sig, carry, alu_set)
+        result[31] = alu.get_output_result()
+
+        return result
 
     def get_output_zero(self) -> int:
-        pass
+        result: list[int] = [0] * 32
 
-    def get_carry_out(self) -> int:
-        pass
+        carry: int = self._carry_in
+        alu_set: int = 0
+        for i in reversed(range(32)):  # 0 -> 31
+            alu = ALU1Bit(self._a[i], self._b[i], self._alu_ctrl_sig, carry, 0)
+            carry = alu.get_output_carry_out()
+            result[i] = alu.get_output_result()
+            alu_set = alu.get_output_set()
 
-    """
-    Implement a 32 bit ALU by using the 1 bit ALU.
-    Your 32-bit ALU should be able to compute 32-bit AND, OR, addition, subtraction, slt(set on if less than).
-    The inputs are:
+        alu = ALU1Bit(self._a[0], self._b[0], self._alu_ctrl_sig, carry, alu_set)
+        result[31] = alu.get_output_result()
 
-    two python lists with length 32, e.g.:
-    A = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1]
-    B = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1],
-    please note that bit 0 is at the end of the list, which means that bit 0 of A is A[31], bit 31 of A is A[0], bit 0
-    of B is B[31] and bit 31 of B is B[0].
-
-    carryIn for the 0th 1-bit ALU, which take care of the bit 0.
-
-    aluctrs, which could be a list of alu control signals:
-    aluctrs[0] controls the all the 2to1 mux in each 1-bit ALU for bits of input A,
-    aluctrs[1] controls the all the 2to1 mux in each 1-bit ALU for bits of input B.
-    aluctrs[2] and aluctrs[3] controls all the 4to1 mux in each 1-bit ALU for choose what as output, 00 choose out from
-    AND, 01 choose out from OR, 10 choose out from adder, 11 choose the less.
-
-    Please note that the carryOut output of each 1-bit ALU except the 31st one should be the carryIn the next 1 bit ALU,
-    you may use for loop here for the computation of the sequential 1-bit ALU.
-
-    And please also note that in order to make slt work, we need to use the sum output from the adder of the 31st 1-bit
-    ALU and make it as the less input of the 0th 1bit ALU.
-    """
+        return int(any(x == 1 for x in result))
 
 
+a = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+# TODO: overflow subtraction is broken
+b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+alu32 = ALU32Bit(a, b, 1, [0, 1, 1, 0])
+print(alu32.get_output_result())
+print(alu32.get_output_overflow())
 
-#ALU test code
-test = [0,1,1,0]
+"""
+Implement a 32 bit ALU by using the 1 bit ALU.
+Your 32-bit ALU should be able to compute 32-bit AND, OR, addition, subtraction, slt(set on if less than).
+The inputs are:
 
-ALU1Bit_0 = ALU1Bit(1,1, test, 0, 0)
+two python lists with length 32, e.g.:
+A = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1]
+B = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1],
+please note that bit 0 is at the end of the list, which means that bit 0 of A is A[31], bit 31 of A is A[0], bit 0
+of B is B[31] and bit 31 of B is B[0].
 
-print(ALU1Bit_0.get_output_sum())
-print(ALU1Bit_0.get_output_carry_out())
+carryIn for the 0th 1-bit ALU, which take care of the bit 0.
+
+aluctrs, which could be a list of alu control signals:
+aluctrs[0] controls the all the 2to1 mux in each 1-bit ALU for bits of input A,
+aluctrs[1] controls the all the 2to1 mux in each 1-bit ALU for bits of input B.
+aluctrs[2] and aluctrs[3] controls all the 4to1 mux in each 1-bit ALU for choose what as output, 00 choose out from
+AND, 01 choose out from OR, 10 choose out from adder, 11 choose the less.
+
+Please note that the carryOut output of each 1-bit ALU except the 31st one should be the carryIn the next 1 bit ALU,
+you may use for loop here for the computation of the sequential 1-bit ALU.
+
+And please also note that in order to make slt work, we need to use the sum output from the adder of the 31st 1-bit
+ALU and make it as the less input of the 0th 1bit ALU.
+"""
+
+# ALU test code
+# test = [0,1,1,0]
+
+# ALU1Bit_0 = ALU1Bit(1,1, test, 0, 0)
+
+# print(ALU1Bit_0.get_output_sum())
+# print(ALU1Bit_0.get_output_carry_out())
