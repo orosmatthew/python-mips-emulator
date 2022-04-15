@@ -519,9 +519,13 @@ class ALUControl:
         self._alu_op1: int = alu_op1
 
     def get_output(self) -> list[int]:
-        org_0 = OrGate(self._f0, self._f3)
-        andg_0 = AndGate(org_0.get_output(), self._alu_op1)
-        output = [andg_0.get_output()]
+        notg_2 = NotGate(self._alu_op0)
+        andg_2 = AndGate(self._alu_op0, notg_2.get_output())
+        output= [andg_2.get_output()]
+
+        andg_1 = AndGate(self._f1, self._alu_op1)
+        org_2 = OrGate(self._alu_op0, andg_1.get_output())
+        output.append(org_2.get_output())
 
         notg_0 = NotGate(self._f2)
         notg_1 = NotGate(self._alu_op1)
@@ -529,14 +533,11 @@ class ALUControl:
                        notg_1.get_output())
         output.append(org_1.get_output())
 
-        andg_1 = AndGate(self._f1, self._alu_op1)
-        org_2 = OrGate(self._alu_op0, andg_1.get_output())
-        output.append(org_2.get_output())
-
-        notg_2 = NotGate(self._alu_op0)
-        andg_2 = AndGate(self._alu_op0, notg_2.get_output())
-        output.append(andg_2.get_output())
+        org_0 = OrGate(self._f0, self._f3)
+        andg_0 = AndGate(org_0.get_output(), self._alu_op1)
+        output.append(andg_0.get_output())
         return output
+
 
 
 class SimpleMIPS:
@@ -545,9 +546,33 @@ class SimpleMIPS:
         self._mem_data: MemData = mem_data
 
     def input_instruction(self, instr: list[int]):
-        pass
 
-    # main_control = MainControl(instr[0], instr[1], instr[2], instr[3], instr[4], instr[5])
+        main_control = MainControl(instr[0], instr[1], instr[2], instr[3], instr[4], instr[5])
+        read_reg1 = instr[6:11]
+        read_reg2 = instr[11:16]
+        rd = instr[16:21]
+        imm = instr[16:32]
+        func = instr[26:32]
+
+        write_reg = [0] * 5
+        for i in range(5):
+            mux = Mux2To1(read_reg2[i], rd[i], main_control.get_reg_dst())
+            write_reg[i] = mux.get_output()
+
+        sign_ext = SignExt(imm)
+        sign_ext_val = sign_ext.get_output()
+
+        regs = Registry(self._reg_data, main_control.get_reg_write(), read_reg1, read_reg2, write_reg, [0] * 32)
+        read_data = regs.get_output_read()
+        read_data1 = read_data[0]
+        read_data2 = read_data[1]
+
+        alu_input_2 = [0] * 32
+        for i in range(32):
+            mux = Mux2To1(read_reg2[i], sign_ext_val[i], main_control.get_alu_src())
+            alu_input_2[i] = mux.get_output()
+
+        alu_control = ALUControl(func[5], func[4], func[3], func[2], func[1], func[0], main_control.get_alu_op()[1], main_control.get_alu_op()[0])
 
     # regs = Registry()
 
