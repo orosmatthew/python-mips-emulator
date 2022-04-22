@@ -213,13 +213,17 @@ test_instruction_sequence = [
      1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0],  # and $11, $9, $10
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0,
      1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0],  # slt $2, $3, $10
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 
+     0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],  # sub $12, $9, $7
+    #[0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 
+    # 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]  # addi $13, $12, 4
 ]
 
 reg_initial_value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
 
 reg_data = circuits.RegData(reg_initial_value)
 
-simple_mips_cpu = circuits.SimpleMIPS(reg_data)
+simple_mips_cpu = circuits.SimpleMIPS(reg_data, circuits.MemData(256, [0] * 32, [0] * 32))
 
 for instr in test_instruction_sequence:
 
