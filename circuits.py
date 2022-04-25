@@ -566,14 +566,25 @@ class SimpleMIPS:
         read_data = regs.get_output_read()
         read_data1 = read_data[0]
         read_data2 = read_data[1]
-
+        mcalucrc = main_control.get_alu_src()
         alu_input_2 = [0] * 32
         for i in range(32):
-            mux = Mux2To1(read_reg2[i], sign_ext_val[i], main_control.get_alu_src())
+            mux = Mux2To1(read_data2[i], sign_ext_val[i], main_control.get_alu_src())
             alu_input_2[i] = mux.get_output()
 
         alu_control = ALUControl(func[5], func[4], func[3], func[2], func[1], func[0], main_control.get_alu_op()[1], main_control.get_alu_op()[0])
-
+        alu_control_out = alu_control.get_output()
+        alu = ALU32Bit(read_data1, alu_input_2, alu_control_out[1], alu_control_out)
+        alu_result = alu.get_output_result()
+        
+        write_data = [0] * 32
+        for i in range(32):
+            mux = Mux2To1(alu_result[i], 0, main_control.get_mem_to_reg())
+            write_data[i] = mux.get_output()
+        
+        regs2 = Registry(self._reg_data, main_control.get_reg_write(), read_reg1, read_reg2, write_reg, write_data)
+        regs2.get_output_read()
+        
     # regs = Registry()
 
     def get_reg_data(self) -> RegData:
