@@ -596,11 +596,18 @@ class ALU32Bit:
     def get_output_overflow(self) -> int:
         result = self.get_output_result()[0]
         not_result = NotGate(self.get_output_result()[0])
-        not_a = NotGate(self._a[0])
         not_b = NotGate(self._b[0])
+        b_inv = self._alu_ctrl_sig[1]
+        not_b_inv = NotGate(b_inv).get_output()
+        andg_3 = AndGate(not_b.get_output(), b_inv)
+        andg_4 = AndGate(self._b[0], not_b_inv)
+        calc_b = OrGate(andg_3.get_output(), andg_4.get_output()).get_output()
+        not_calc_b = NotGate(calc_b).get_output()
 
-        andg_1 = AndGate3(not_result.get_output(), self._a[0], self._b[0])
-        andg_2 = AndGate3(result, not_a.get_output(), not_b.get_output())
+        not_a = NotGate(self._a[0])
+
+        andg_1 = AndGate3(not_result.get_output(), self._a[0], calc_b)
+        andg_2 = AndGate3(result, not_a.get_output(), not_calc_b)
 
         org_1 = OrGate(andg_1.get_output(), andg_2.get_output())
         return org_1.get_output()
@@ -640,7 +647,6 @@ class ALU32Bit:
 
 
 # a = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# TODO: overflow subtraction is broken
 # b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 # alu32 = ALU32Bit(a, b, 1, [0, 1, 1, 0])
 # print(alu32.get_output_result())
