@@ -1,9 +1,10 @@
+# base class for a simple 2-input circuit
 class BasicCircuit(object):
     def __init__(self, in1: int, in2: int):
         self._in1: int = in1
         self._in2: int = in2
 
-
+# helper class for converting a 32-bit binary value to a decimal value
 def bin32_to_dec(bin32: list[int]) -> int:
     num: int = 0
     for p in range(16):
@@ -11,7 +12,7 @@ def bin32_to_dec(bin32: list[int]) -> int:
             num += pow(2, p)
     return num
 
-
+# class to maintain the state of memory
 class MemData:
     def __init__(self, n_bytes: int, base_addr: list[int], initial_value: int):
         self._memory: list[int] = [initial_value] * n_bytes * 4 * 8
@@ -34,7 +35,7 @@ class MemData:
             return []
         return self._memory[index:index + 32]
 
-
+# class to emulate the memory circuit, works in conjunction with MemData to maintain state
 class Memory:
     def __init__(self, mem_data: MemData, mem_write: int, mem_read: int, address: list[int], write_data: list[int]):
         self._mem_data: MemData = mem_data
@@ -53,7 +54,7 @@ class Memory:
 
         return return_data
 
-
+# class to maintain the state of registers
 class RegData:
     def __init__(self, reg_initial_value: list[int]):
         self._regs: list[list[int]] = [reg_initial_value] * 32
@@ -67,7 +68,7 @@ class RegData:
     def get_all_reg_vals(self) -> list[list[int]]:
         return self._regs
 
-
+# class to emulate circuit that decodes part of instruction to specify a certain register
 class RegDecoder:
     def __init__(self, instr_reg: list[int]):
         self._a: int = instr_reg[0]
@@ -157,7 +158,7 @@ class RegDecoder:
 
         return output
 
-
+# class to emulate the Registry circuit, works in conjunction with RegData to maintain state
 class Registry:
     def __init__(self, reg_data: RegData, reg_write: int, read_reg_1: list[int], read_reg_2: list[int],
                  write_reg: list[int], write_data: list[int]):
@@ -185,7 +186,7 @@ class Registry:
 
         return read_data
 
-
+# basic 2-input and gate
 class AndGate(BasicCircuit):
     def get_output(self) -> int:
         if self._in1 == 1 and self._in2 == 1:
@@ -193,7 +194,7 @@ class AndGate(BasicCircuit):
         else:
             return 0
 
-
+# basic 2-input or gate
 class OrGate(BasicCircuit):
     def get_output(self) -> int:
         if self._in1 == 0 and self._in2 == 0:
@@ -201,7 +202,7 @@ class OrGate(BasicCircuit):
         else:
             return 1
 
-
+# basic 3-input or gate
 class OrGate3(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int):
         super().__init__(in1, in2)
@@ -215,7 +216,7 @@ class OrGate3(BasicCircuit):
         out_org1 = org1.get_output()
         return out_org1
 
-
+# basic 4-input or gate
 class OrGate4(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int):
         super().__init__(in1, in2)
@@ -233,7 +234,7 @@ class OrGate4(BasicCircuit):
         out_org2 = org2.get_output()
         return out_org2
 
-
+# not gate
 class NotGate:
     def __init__(self, in1: int):
         self._in1: int = in1
@@ -244,7 +245,7 @@ class NotGate:
         else:
             return 1
 
-
+# basic 3-input and gate
 class AndGate3(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int):
         super().__init__(in1, in2)
@@ -259,7 +260,7 @@ class AndGate3(BasicCircuit):
 
         return out_andg_1
 
-
+# basic 4-input and gate
 class AndGate4(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int):
         super().__init__(in1, in2)
@@ -273,7 +274,7 @@ class AndGate4(BasicCircuit):
         andg_0 = AndGate(out_andg3_0, self._in4)
         return andg_0.get_output()
 
-
+# basic 5-input and gate
 class AndGate5(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int, in5: int):
         super().__init__(in1, in2)
@@ -288,7 +289,7 @@ class AndGate5(BasicCircuit):
         andg_0 = AndGate(out_andg4_0, self._in5)
         return andg_0.get_output()
 
-
+# basic 6-input and gate
 class AndGate6(BasicCircuit):
     def __init__(self, in1: int, in2: int, in3: int, in4: int, in5: int, in6: int):
         super().__init__(in1, in2)
@@ -304,7 +305,7 @@ class AndGate6(BasicCircuit):
         andg_0 = AndGate(out_andg5_0, self._in6)
         return andg_0.get_output()
 
-
+# 2-1 multiplexer used primarily to select between 2 values
 class Mux2To1:
     def __init__(self, d0: int, d1: int, s: int):
         self._d0: int = d0
@@ -319,7 +320,7 @@ class Mux2To1:
         out_org0 = org0.get_output()
         return out_org0
 
-
+# 4-1 multiplexer used primarily to select between 4 values
 class Mux4To1:
     def __init__(self, d0: int, d1: int, d2: int, d3: int, s0: int, s1: int):
         self._d0: int = d0
@@ -338,7 +339,7 @@ class Mux4To1:
         out_mux2 = mux2.get_output()
         return out_mux2
 
-
+# full adder to add 2 1-bit binary values along with carry-in and carry-out
 class FullAdder:
     def __init__(self, a: int, b: int, c_in: int):
         self._a: int = a
@@ -385,7 +386,7 @@ class FullAdder:
 
         return org3_0.get_output()
 
-
+# sign extend to convert 16-bit binary value to 32-bit binary value
 class SignExt:
     def __init__(self, bits16: list[int]):
         self._bits16 = bits16
@@ -395,7 +396,7 @@ class SignExt:
         output.extend(self._bits16)
         return output
 
-
+# ALU 1-bit to perform various operations such as add, or, sum, subtract, comparison with 2 1-bit binary inputs
 class ALU1Bit:
     def __init__(self, a: int, b: int, func_code: list[int], carry_in: int, less: int):
         self._a: int = a
@@ -445,7 +446,7 @@ class ALU1Bit:
         full_adder_0 = FullAdder(mux_2to1_0.get_output(), mux_2to1_1.get_output(), self._carry_in).get_output_sum()
         return full_adder_0
 
-
+# main control takes in op-code from instruction to direction various multiplexers and state handling across CPU 
 class MainControl:
     def __init__(self, op5: int, op4: int, op3: int, op2: int, op1: int, op0: int):
         self._op0: int = op0
@@ -506,7 +507,7 @@ class MainControl:
         alu_op = [self._get_output_r(), self._get_output_beq()]
         return alu_op
 
-
+# alu takes in function code and ALU-OP from MainControl to direct which operation ALU should perform
 class ALUControl:
     def __init__(self, f0: int, f1: int, f2: int, f3: int, f4: int, f5: int, alu_op0: int, alu_op1: int):
         self._f0: int = f0
@@ -539,7 +540,7 @@ class ALUControl:
         return output
 
 
-
+# SimpleMIPS is the main class that runs instructions to perform manipulations of state within RegData and MemData
 class SimpleMIPS:
     def __init__(self, reg_data: RegData, mem_data: MemData):
         self._reg_data: RegData = reg_data
@@ -576,7 +577,6 @@ class SimpleMIPS:
         alu = ALU32Bit(read_data1, alu_input_2, alu_control_out[1], alu_control_out)
         alu_result = alu.get_output_result()
         
-        
         memory = Memory(self._mem_data, main_control.get_mem_write(), main_control.get_mem_read(), alu_result, read_data2)
         mem_read_data = memory.get_output_read_data()
 
@@ -588,9 +588,6 @@ class SimpleMIPS:
         regs2 = Registry(self._reg_data, main_control.get_reg_write(), read_reg1, read_reg2, write_reg, write_data)
         regs2.get_output_read()
 
-        
-    # regs = Registry()
-
     def get_reg_data(self) -> RegData:
         return self._reg_data
 
@@ -598,9 +595,7 @@ class SimpleMIPS:
         return self._mem_data
 
 
-# m = SimpleMIPS(RegData([0] * 32), MemData(256, [0] * 32, 0))
-# m.input_instruction([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-
+# ALU 32-bit is the 32-bit extension of a 1-bit ALU and is capable of comparison operations
 class ALU32Bit:
     def __init__(self, a: list[int], b: list[int], carry_in: int, alu_ctrl_sig: list[int]):
         self._a: list[int] = a
@@ -659,19 +654,3 @@ class ALU32Bit:
         result[31] = alu.get_output_result()
 
         return int(any(x == 1 for x in result))
-
-
-# a = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# alu32 = ALU32Bit(a, b, 1, [0, 1, 1, 0])
-# print(alu32.get_output_result())
-# print(alu32.get_output_overflow())
-
-
-# ALU test code
-# test = [0,1,1,0]
-
-# ALU1Bit_0 = ALU1Bit(1,1, test, 0, 0)
-
-# print(ALU1Bit_0.get_output_sum())
-# print(ALU1Bit_0.get_output_carry_out())
