@@ -566,7 +566,6 @@ class SimpleMIPS:
         read_data = regs.get_output_read()
         read_data1 = read_data[0]
         read_data2 = read_data[1]
-        mcalucrc = main_control.get_alu_src()
         alu_input_2 = [0] * 32
         for i in range(32):
             mux = Mux2To1(read_data2[i], sign_ext_val[i], main_control.get_alu_src())
@@ -577,13 +576,18 @@ class SimpleMIPS:
         alu = ALU32Bit(read_data1, alu_input_2, alu_control_out[1], alu_control_out)
         alu_result = alu.get_output_result()
         
+        
+        memory = Memory(self._mem_data, main_control.get_mem_write(), main_control.get_mem_read(), alu_result, read_data2)
+        mem_read_data = memory.get_output_read_data()
+
         write_data = [0] * 32
         for i in range(32):
-            mux = Mux2To1(alu_result[i], 0, main_control.get_mem_to_reg())
+            mux = Mux2To1(alu_result[i], mem_read_data[i], main_control.get_mem_to_reg())
             write_data[i] = mux.get_output()
         
         regs2 = Registry(self._reg_data, main_control.get_reg_write(), read_reg1, read_reg2, write_reg, write_data)
         regs2.get_output_read()
+
         
     # regs = Registry()
 
@@ -657,8 +661,8 @@ class ALU32Bit:
         return int(any(x == 1 for x in result))
 
 
-# a = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+# a = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+# b = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 # alu32 = ALU32Bit(a, b, 1, [0, 1, 1, 0])
 # print(alu32.get_output_result())
 # print(alu32.get_output_overflow())

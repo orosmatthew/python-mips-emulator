@@ -203,6 +203,7 @@ Register  31 :  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 '''
 
 test_instruction_sequence = [
+    
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0,
      0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # add $8, $6, $7
     [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0,
@@ -215,15 +216,20 @@ test_instruction_sequence = [
      1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0],  # slt $2, $3, $10
     [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 
      0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],  # sub $12, $9, $7
-    #[0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 
-    # 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]  # addi $13, $12, 4
+    [1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], # sw $9, 16($13)
+    [1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]  # lw $14, 16($13)
 ]
 
 reg_initial_value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+mem_initial_value = 0
+mem_base_addr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 reg_data = circuits.RegData(reg_initial_value)
+mem_data = circuits.MemData(256, mem_base_addr, mem_initial_value)
 
-simple_mips_cpu = circuits.SimpleMIPS(reg_data, circuits.MemData(256, [0] * 32, [0] * 32))
+simple_mips_cpu = circuits.SimpleMIPS(reg_data, mem_data)
 
 for instr in test_instruction_sequence:
 
