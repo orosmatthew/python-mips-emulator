@@ -475,7 +475,11 @@ class ALU1Bit:
         return full_adder_0  # Outputs Set
 
 
-# main control takes in op-code from instruction to direction various multiplexers and state handling across CPU
+# MainControl takes in 6 bits of Op-Code from the instruction to direct various multiplexers and operations across CPU.
+# To simplify the code, six extra variables were created to contain the negation of each bit of Op-Code.
+# The four primary 6 input AND Gates each have a function as to not repeat code.
+# Eight separate functions are used to retrieve the various outputs of the main control. 
+# All are 1-bit integers except the get_alu_op which outputs a list containing 2 integers. 
 class MainControl:
     def __init__(self, op5: int, op4: int, op3: int, op2: int, op1: int, op0: int):
         self._op0: int = op0
@@ -537,7 +541,10 @@ class MainControl:
         return alu_op
 
 
-# alu takes in function code and ALU-OP from MainControl to direct which operation ALU should perform
+# ALUControl takes in 6 bits of function code from  the instruction and the 2 bits of ALU-OP code from
+# MainControl, and outputs 4 bits to direct what operation the ALU should perform.
+# Each ALU Control Bit is computed via a mix of NOT, AND,  OR Gates and are added into a 
+# list starting with the left most Control Bit. 
 class ALUControl:
     def __init__(self, f0: int, f1: int, f2: int, f3: int, f4: int, f5: int, alu_op0: int, alu_op1: int):
         self._f0: int = f0
